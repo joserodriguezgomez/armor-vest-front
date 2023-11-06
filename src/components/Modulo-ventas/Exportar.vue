@@ -1,9 +1,12 @@
 <template>
-    <v-btn> exportar </v-btn>
+   <v-btn> Exportar
+  </v-btn>
 </template>
 
 <script>
-export default {};
+export default {
+
+};
 </script>
 
 <style scoped>
