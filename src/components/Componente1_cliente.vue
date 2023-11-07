@@ -1,10 +1,21 @@
 <template>
-  <h1>clientes</h1>
+  <v-app>
+    <v-container>
+      <v-card>
+        <v-card-title>
+          MODULO CLIENTES
+        </v-card-title>
+        <v-card-text>
+          Este es un ejemplo de texto dentro de una tarjeta en Vue.js.
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
 export default {
-
+  name: 'App',
 }
 </script>
 

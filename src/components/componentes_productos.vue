@@ -3,7 +3,7 @@
     <v-container>
       <v-card>
         <v-card-title>
-          DASHBOARD
+          MODULO PRODUCTOS
         </v-card-title>
         <v-card-text>
           Este es un ejemplo de texto dentro de una tarjeta en Vue.js.
@@ -18,7 +18,6 @@ export default {
   name: 'App',
 }
 </script>
-
 <style>
 
 </style>

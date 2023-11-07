@@ -42,6 +42,12 @@
             value="clientes"
             to="/clientes"
           ></v-list-item>
+            <v-list-item
+            prepend-icon="mdi-account-group-outline"
+            title="Productos"
+            value="productos"
+            to="/productos"
+          ></v-list-item>
         </v-list>
       </v-navigation-drawer>
       <v-main class = "custom-main" style="height: 700px"> <router-view></router-view> </v-main>

@@ -1,6 +1,8 @@
 <template>
   <div>
     <v-container fluid>
+      <v-card  >
+      
       <v-row no-gutters>
         <v-col cols="6" offset="0">
           <Buscador />
@@ -16,6 +18,8 @@
         </v-col>
         
       </v-row>
+     
+      </v-card>
 
       <tabla />
       <Paginacion/>
@@ -34,9 +38,9 @@ import Paginacion from "@/components/Modulo-ventas/Paginacion.vue";
 
 
 <style>
-/* .botones{
-  margin: 5px;
-  border: 2px solid rgb(251, 247, 247);
+/* .botones {
+  margin: 100px;
+  border: 2px solid rgb(239, 233, 233);
   border-radius: 10px;
 } */
 </style>
