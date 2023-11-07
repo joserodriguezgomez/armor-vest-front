@@ -1,6 +1,5 @@
 <template>
-   <v-btn> Exportar
-  </v-btn>
+   <v-btn variant="text" icon="mdi-arrow-down"></v-btn>
 </template>
 
 <script>

@@ -1,15 +1,20 @@
 <template>
-    <v-btn> Agregar </v-btn>
+   <div>
+    <v-btn v-on:click="navegarAFormulario" to='/ventas/formulario' variant="text" icon="mdi-plus" ></v-btn>
+  </div>
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    navegarAFormulario() {
+      this.$router.push({ name: 'Formulario' });
+    },
+  },
+}
 </script>
 
-<style scoped>
-/* .botones-accion {
-  margin: 1px;
-  border: 2px solid rgb(184, 59, 59);
-  border-radius: 10px;
-} */
+<style>
+
 </style>
+ 

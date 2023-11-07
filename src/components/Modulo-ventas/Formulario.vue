@@ -1,5 +1,5 @@
 <template>
-   <v-btn variant="text" icon="mdi-filter"></v-btn>
+  <H1>Formulario</H1>
 </template>
 
 <script>
@@ -8,3 +8,6 @@ export default {
 }
 </script>
 
+<style>
+
+</style>

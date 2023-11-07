@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-container fluid>
-      <v-card  >
+    <v-container >
       
-      <v-row no-gutters>
-        <v-col cols="6" offset="0">
+      
+      <v-row no-gutters class="botones" >
+        <v-col cols="3" offset="0">
           <Buscador />
         </v-col>
-        <v-col col="1" offset="3">
+        <v-col col="1" offset="6">
           <Filtrar />
         </v-col>
         <v-col cols="1" offset="12">
@@ -18,11 +18,12 @@
         </v-col>
         
       </v-row>
-     
-      </v-card>
+     <tabla />
+    
 
-      <tabla />
+      
       <Paginacion/>
+      <Formulario/>
     </v-container>
   </div>
 </template>
@@ -34,6 +35,7 @@ import btn_exportar from "@/components/Modulo-ventas/Exportar.vue";
 import Filtrar from "@/components/Modulo-ventas/Filtrar.vue";
 import Buscador from "@/components/Modulo-ventas/Buscador.vue";
 import Paginacion from "@/components/Modulo-ventas/Paginacion.vue";
+import Formulario from "@/components/Modulo-ventas/Formulario.vue";
 </script>
 
 

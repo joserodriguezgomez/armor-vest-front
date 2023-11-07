@@ -8,8 +8,8 @@
 
  <style>
     .custom-head {
-    background-color: #23282c; /* Color de fondo personalizado */
-    color: white; /* Color de texto personalizado */
+    background-color: #111111; /* Color de fondo personalizado */
+    color: rgb(255, 255, 255); /* Color de texto personalizado */
     padding: 20px; /* Espaciado personalizado */
     /* Agrega estilos CSS personalizados según tus necesidades */
     }

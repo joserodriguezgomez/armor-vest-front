@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-layout>
+    <v-layout >
       <v-navigation-drawer
         v-model="drawer"
         :rail="rail"
@@ -25,13 +25,13 @@
 
         <v-list density="compact" nav>
           <v-list-item
-            prepend-icon="mdi-home-city"
+            prepend-icon="mdi-view-dashboard"
             title="Dashboard"
             value="Home"
             to="/"
           ></v-list-item>
           <v-list-item
-            prepend-icon="mdi-account"
+            prepend-icon="mdi-star"
             title="Ventas"
             value="Ventas"
             to="/ventas"
@@ -43,7 +43,7 @@
             to="/clientes"
           ></v-list-item>
             <v-list-item
-            prepend-icon="mdi-account-group-outline"
+            prepend-icon="mdi-folder-outline"
             title="Productos"
             value="productos"
             to="/productos"
@@ -73,3 +73,5 @@ export default {
   }
 
 </style>
+
+// background: #e2e5e8
