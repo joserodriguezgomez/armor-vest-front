@@ -1,9 +1,10 @@
 <template>
-  <v-autocomplete
-  class = "buscador-ventas"
-  label="Autocomplete"
-  :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-></v-autocomplete>
+        <v-text-field 
+        v-model="firstName"
+        :rules="rules"
+        label="Buscar">
+        <v-icon icon="fa:fas fa-search"></v-icon>
+        </v-text-field>
 </template>
 
 <script>
@@ -12,3 +13,6 @@ export default {
 }
 </script>
 
+<style>
+
+</style>

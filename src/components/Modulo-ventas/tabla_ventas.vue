@@ -1,5 +1,5 @@
 <template>
-  <v-table density="compact" class = "tabla-ventas">
+  <v-table density="compact" class="tabla-ventas">
     <thead>
       <tr>
         <th class="text-left"></th>
@@ -37,6 +37,8 @@
       </tr>
     </tbody>
   </v-table>
+
+  
 </template>
 
 <script>
@@ -46,27 +48,27 @@ export default {
       desserts: [
         {
           name: "juan",
-          calories: 159,
+          calories: 555,
         },
         {
           name: "Dieigo",
-          calories: 237,
+          calories: 777,
         },
         {
           name: "Jose",
-          calories: 262,
+          calories: 667,
         },
         {
           name: "Pedro",
-          calories: 305,
+          calories: 888,
         },
         {
           name: "Claudio",
-          calories: 356,
+          calories: 998,
         },
         {
           name: "Andres",
-          calories: 375,
+          calories: 12345,
         },
       ],
     };
@@ -75,9 +77,10 @@ export default {
 </script> 
 
 <style scoped>
-    .tabla-ventas{
-        margin: 5px;
-        border: 2px solid rgb(239, 233, 233);
-        border-radius: 10px;
-    }
+.tabla-ventas {
+  margin: 5px;
+  border: 2px solid rgb(239, 233, 233);
+  border-radius: 10px;
+}
+
 </style>

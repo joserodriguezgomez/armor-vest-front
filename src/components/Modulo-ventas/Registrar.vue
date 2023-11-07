@@ -1,5 +1,5 @@
 <template>
-    <v-btn> Button </v-btn>
+    <v-btn> Agregar </v-btn>
 </template>
 
 <script>
