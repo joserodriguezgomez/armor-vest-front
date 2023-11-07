@@ -1,17 +1,16 @@
 <template>
   <v-card>
-    <v-layout >
+    <v-layout align-center justify-space-around wrap>
       <v-navigation-drawer
         v-model="drawer"
         :rail="rail"
         permanent
         @click="rail = false"
       >
-        <v-list-item
-          prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-          title=""
-          nav
-        >
+        <v-list-item prepend-avatar=" ccount_circle" title="" nav>
+          <v-avatar color="teal">
+            <span class="white--text headline">C</span>
+          </v-avatar>
           <template v-slot:append>
             <v-btn
               variant="text"
@@ -42,7 +41,7 @@
             value="clientes"
             to="/clientes"
           ></v-list-item>
-            <v-list-item
+          <v-list-item
             prepend-icon="mdi-folder-outline"
             title="Productos"
             value="productos"
@@ -50,7 +49,9 @@
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-main class = "custom-main" style="height: 700px"> <router-view></router-view> </v-main>
+      <v-main class="custom-main" style="height: 700px">
+        <router-view></router-view>
+      </v-main>
     </v-layout>
   </v-card>
 </template>
@@ -68,10 +69,9 @@ export default {
 
 
 <style scoped>
-  .custom-main{
-    background: #e2e5e8;
-  }
-
+.custom-main {
+  background: #e2e5e8;
+}
 </style>
 
 // background: #e2e5e8

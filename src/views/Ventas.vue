@@ -23,7 +23,7 @@
 
       
       <Paginacion/>
-      <Formulario/>
+      
     </v-container>
   </div>
 </template>

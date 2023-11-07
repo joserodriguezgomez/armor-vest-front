@@ -1,6 +1,6 @@
 <template>
    <div>
-    <v-btn v-on:click="navegarAFormulario" to='/ventas/formulario' variant="text" icon="mdi-plus" ></v-btn>
+    <v-btn v-on:click="navegarAFormulario" to='formulario' variant="text" icon="mdi-plus" ></v-btn>
   </div>
 </template>
 

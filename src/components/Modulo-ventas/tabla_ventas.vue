@@ -20,7 +20,7 @@
 
     <tbody>
       <tr v-for="item in desserts" :key="item.name">
-        <td><v-checkbox label=""></v-checkbox></td>
+        <td></td>
         <td>{{ item.name }}</td>
         <td>{{ item.name }}</td>
         <td>{{ item.calories }}</td>
