@@ -1,5 +1,5 @@
 <template>
-     <v-pagination
+     <v-pagination class="bg-white relative border round-lg"
           v-model="page"
           :length="15"
           :total-visible="7"

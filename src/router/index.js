@@ -47,6 +47,37 @@ const routes = [
       
     ],
   },
+  {
+    path: '/productos',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'productos',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/views/productos.vue'),
+      },
+      
+    ],
+  },
+  {
+    path: '/formulario',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'formulario',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "home" */ '@/components/Modulo-ventas/Formulario'),
+      },
+      
+    ],
+  },
+
 ]
 
 const router = createRouter({
