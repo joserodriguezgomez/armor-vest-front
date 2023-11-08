@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg- relative border round-lg"  >
     <v-container >
       
       
@@ -40,9 +40,8 @@ import Formulario from "@/components/Modulo-ventas/Formulario.vue";
 
 
 <style>
-/* .botones {
-  margin: 100px;
-  border: 2px solid rgb(239, 233, 233);
-  border-radius: 10px;
-} */
+.botones {
+  background-color: #f9f9f9;
+  margin: 10px;
+}
 </style>

@@ -1,5 +1,7 @@
 <template>
+
   <v-card>
+    
     <v-layout align-center justify-space-around wrap>
       <v-navigation-drawer
         v-model="drawer"
@@ -11,7 +13,8 @@
           <v-avatar color="teal">
             <span class="white--text headline">C</span>
           </v-avatar>
-          <template v-slot:append>
+          <template v-slot:append > 
+            
             <v-btn
               variant="text"
               icon="mdi-chevron-left"
@@ -69,8 +72,9 @@ export default {
 
 
 <style scoped>
+/* color de fondo  */
 .custom-main {
-  background: #e2e5e8;
+  background: #e2e5e8; 
 }
 </style>
 
