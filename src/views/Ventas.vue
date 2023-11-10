@@ -1,9 +1,7 @@
 <template>
-  <div class="bg- relative border round-lg"  >
-    <v-container >
-      
-      
-      <v-row no-gutters class="botones" >
+  <div class="bg- relative border round-lg">
+    <v-container fluid>
+      <v-row no-gutters class="botones">
         <v-col cols="3" offset="0">
           <Buscador />
         </v-col>
@@ -16,14 +14,10 @@
         <v-col cols="1" offset="12">
           <btn_registrar />
         </v-col>
-        
       </v-row>
-     <tabla />
-    
+      <tabla />
 
-      
-      <Paginacion/>
-      
+      <Paginacion />
     </v-container>
   </div>
 </template>
@@ -41,7 +35,7 @@ import Formulario from "@/components/Modulo-ventas/Formulario.vue";
 
 <style>
 .botones {
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   margin: 10px;
 }
 </style>

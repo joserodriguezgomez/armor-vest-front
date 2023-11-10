@@ -1,10 +1,9 @@
  <template>
   <div>
-    <v-toolbar density="compact" color="indigo-darken-4">
+    <v-toolbar density="compact" color="black">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Perfil Admin</v-toolbar-title>
-
+      <img src="@/assets/armor2.png" alt="Imagen de perfil" class="imagen-perfil">
+      
       <v-spacer> </v-spacer>
 
       <v-btn class="text-none" stacked>
@@ -35,6 +34,13 @@
   padding: 5px; /* Espaciado personalizado */
   /* Agrega estilos CSS personalizados según tus necesidades */
 }
+.imagen-perfil {
+  width: 100px; /* Ancho personalizado */
+  height: 40px; /* Alto personalizado */
+ /* Forma de círculo (opcional) */
+  /* Otros estilos personalizados según tus necesidades */
+}
+
 </style>
 
 <!-- amarillo armor-vest
