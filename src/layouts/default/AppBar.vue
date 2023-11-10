@@ -1,9 +1,10 @@
 <template>
-
+   
   <v-card>
     
     <v-layout align-center justify-space-around wrap>
       <v-navigation-drawer
+        style="color"
         v-model="drawer"
         :rail="rail"
         permanent
@@ -52,7 +53,7 @@
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-main class="custom-main" style="height: 700px">
+      <v-main class="custom-main" style="height: 850px">
         <router-view></router-view>
       </v-main>
     </v-layout>

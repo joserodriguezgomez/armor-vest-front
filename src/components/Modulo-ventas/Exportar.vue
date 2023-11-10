@@ -1,5 +1,5 @@
 <template >
-   <v-btn class="boton.exportar" variant="text" icon="mdi-arrow-down"></v-btn>
+   <v-btn  class="boton.exportar" variant="text" icon="mdi-arrow-down"></v-btn>
 </template>
 
 <script>
@@ -10,7 +10,7 @@ export default {
 
 <style scoped>
 .boton.exportar {
-  background-color: #f9f9f9;
+  background-color: #f9f7f7;
   margin: 10px;
 }
 </style>  
