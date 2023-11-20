@@ -75,7 +75,7 @@ export default {
 <style scoped>
 /* color de fondo  */
 .custom-main {
-  background: #e2e5e8; 
+  background: #f1f2f4; 
 }
 </style>
 

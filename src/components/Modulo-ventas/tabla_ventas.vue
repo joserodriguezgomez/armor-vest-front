@@ -1,199 +1,352 @@
 <template>
-  <v-data-table-server
-    v-model:items-per-page="itemsPerPage"
-    :search="search"
+  <v-data-table
     :headers="headers"
-    :items-length="totalItems"
-    :items="serverItems"
-    :loading="loading"
-    item-value="name"
-    @update:options="loadItems"
+    :items="desserts"
+    :sort-by="[{ key: 'calories', order: 'asc' }]"
   >
-    <template v-slot:tfoot>
-      <tr>
-        <td>
-          <v-text-field
-            v-model="name"
-            hide-details
-            placeholder="Buscar..."
-            class="ma-2"
-            density="compact"
-          ></v-text-field>
-        </td>
-      </tr>
+    <template v-slot:top>
+      <v-toolbar
+        flat
+      >
+        <v-toolbar-title>Registro de ventas</v-toolbar-title>
+        <v-divider
+          class="mx-4"
+          inset
+          vertical
+        ></v-divider>
+        <v-spacer></v-spacer>
+        <v-dialog
+          v-model="dialog"
+          max-width="500px"
+        >
+
+        <!-- boton registrar -->
+          <template v-slot:activator="{ props }">
+            <v-btn
+              color="black"
+              dark
+              class="mb-2"
+              v-bind="props"
+              icon="mdi-plus"
+            >
+              
+            </v-btn>
+            <v-btn
+              color="Black"
+              dark
+              class="mb-2"
+              v-bind="props"
+              icon="mdi-upload"
+            >
+              
+            </v-btn>
+            
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">{{ formTitle }}</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.name"
+                      label="Dessert name"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.calories"
+                      label="Calories"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.fat"
+                      label="Fat (g)"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.carbs"
+                      label="Carbs (g)"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      v-model="editedItem.protein"
+                      label="Protein (g)"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue-darken-1"
+                variant="text"
+                @click="close"
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                color="blue-darken-1"
+                variant="text"
+                @click="save"
+              >
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5">¿Seguro que deseas eliminar esta venta?</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancelar</v-btn>
+              <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">Seguro</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
     </template>
-  </v-data-table-server>
-</template> 
+    <template v-slot:item.actions="{ item }">
+        <v-icon
+        size="small"
+        class="me-2"
+        @click="editItem(item)"
+        color="black"
 
+      >
+        mdi-eye
+      </v-icon>
+      <v-icon
+        size="small"
+        class="me-2"
+        @click="editItem(item)"
+        color="black"
+
+      >
+        mdi-pencil
+      </v-icon>
+      <v-icon
+        size="small"
+        @click="deleteItem(item)"
+        color="black"
+
+      >
+        mdi-delete
+      </v-icon>
+      
+    </template>
+    <template v-slot:no-data>
+      <v-btn
+        color="primary"
+        @click="initialize"
+      >
+        Reset
+      </v-btn>
+    </template>
+  </v-data-table>
+</template>
 <script>
-const desserts = [
-  {
-    name: "Banco Santander",
-    calories: "Chaleco",
-    fat: 123,
-    carbs: "S",
-    protein: 32156,
-    iron: "7415821",
-  },
-  {
-    name: "Banco Falabella",
-    calories: "Casco",
-    fat: 852,
-    carbs: "L",
-    protein: 147963,
-    iron: "123654",
-  },
-  {
-    name: "Prosegur",
-    calories: "Panel",
-    fat: 258,
-    carbs: "M",
-    protein: 963258,
-    iron: "753951",
-  },
-  {
-    name: "Municipalidad Providencia",
-    calories: "Chaleco",
-    fat: 746,
-    carbs: "XL",
-    protein: 829375,
-    iron: "1839725",
-  },
-  {
-    name: "Caja los Andes",
-    calories: "Chaleco",
-    fat: 951,
-    carbs: "S",
-    protein: 97318,
-    iron: "7456321",
-  },
-  {
-    name: "Banco Santander",
-    calories: "Chaleco",
-    fat: 123,
-    carbs: "S",
-    protein: 32156,
-    iron: "7415821",
-  },
-  {
-    name: "Banco Santander",
-    calories: "Chaleco",
-    fat: 123,
-    carbs: "S",
-    protein: 32156,
-    iron: "7415821",
-  },
-  {
-    name: "Banco Chile",
-    calories: "Casco",
-    fat: 519,
-    carbs: "M",
-    protein: 15632,
-    iron: "3579515",
-  },
-  {
-    name: "Prosegur",
-    calories: "Chaleco",
-    fat: 123,
-    carbs: "M",
-    protein: 32156,
-    iron: "7415821",
-  },
-  {
-    name: "Municipalidad Las Condes",
-    calories: "Panel",
-    fat: 123,
-    carbs: "L",
-    protein: 32156,
-    iron: "7415821",
-  },
-];
-
-const FakeAPI = {
-  async fetch({ page, itemsPerPage, sortBy, search }) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const start = (page - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const items = desserts.slice().filter((item) => {
-          if (
-            search.name &&
-            !item.name.toLowerCase().includes(search.name.toLowerCase())
-          ) {
-            return false;
-          }
-
-          // eslint-disable-next-line sonarjs/prefer-single-boolean-return
-          if (search.calories && !(item.calories >= Number(search.calories))) {
-            return false;
-          }
-
-          return true;
-        });
-
-        if (sortBy.length) {
-          const sortKey = sortBy[0].key;
-          const sortOrder = sortBy[0].order;
-          items.sort((a, b) => {
-            const aValue = a[sortKey];
-            const bValue = b[sortKey];
-            return sortOrder === "desc" ? bValue - aValue : aValue - bValue;
-          });
-        }
-
-        const paginated = items.slice(start, end);
-
-        resolve({ items: paginated, total: items.length });
-      }, 500);
-    });
-  },
-};
-
-export default {
-  data: () => ({
-    itemsPerPage: 5,
-    headers: [
-      {
-        title: "Clientes",
-        align: "start",
-        sortable: false,
-        key: "name",
+  export default {
+    data: () => ({
+      dialog: false,
+      dialogDelete: false,
+      headers: [
+        {
+          title: 'Dessert (100g serving)',
+          align: 'start',
+          sortable: false,
+          key: 'name',
+        },
+        { title: 'Calories', key: 'calories' },
+        { title: 'Fat (g)', key: 'fat' },
+        { title: 'Carbs (g)', key: 'carbs' },
+        { title: 'Protein (g)', key: 'protein' },
+        { title: 'Actions', key: 'actions', sortable: false },
+      ],
+      desserts: [],
+      editedIndex: -1,
+      editedItem: {
+        name: '',
+        calories: 0,
+        fat: 0,
+        carbs: 0,
+        protein: 0,
       },
-      { title: "Articulo", key: "calories", align: "end" },
-      { title: "N° Serie", key: "fat", align: "end" },
-      { title: "Talla", key: "carbs", align: "end" },
-      { title: "GD", key: "protein", align: "end" },
-      { title: "Idic", key: "iron", align: "end" },
-    ],
-    serverItems: [],
-    loading: true,
-    totalItems: 0,
-    name: "",
-    calories: "",
-    search: "",
-  }),
-  watch: {
-    name() {
-      this.search = String(Date.now());
+      defaultItem: {
+        name: '',
+        calories: 0,
+        fat: 0,
+        carbs: 0,
+        protein: 0,
+      },
+    }),
+
+    computed: {
+      formTitle () {
+        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      },
     },
-    calories() {
-      this.search = String(Date.now());
+
+    watch: {
+      dialog (val) {
+        val || this.close()
+      },
+      dialogDelete (val) {
+        val || this.closeDelete()
+      },
     },
-  },
-  methods: {
-    loadItems({ page, itemsPerPage, sortBy }) {
-      this.loading = true;
-      FakeAPI.fetch({
-        page,
-        itemsPerPage,
-        sortBy,
-        search: { name: this.name, calories: this.calories },
-      }).then(({ items, total }) => {
-        this.serverItems = items;
-        this.totalItems = total;
-        this.loading = false;
-      });
+
+    created () {
+      this.initialize()
     },
-  },
-};
+
+    methods: {
+      initialize () {
+        this.desserts = [
+          {
+            name: 'Frozen Yogurt',
+            calories: 159,
+            fat: 6.0,
+            carbs: 24,
+            protein: 4.0,
+          },
+          {
+            name: 'Ice cream sandwich',
+            calories: 237,
+            fat: 9.0,
+            carbs: 37,
+            protein: 4.3,
+          },
+          {
+            name: 'Eclair',
+            calories: 262,
+            fat: 16.0,
+            carbs: 23,
+            protein: 6.0,
+          },
+          {
+            name: 'Cupcake',
+            calories: 305,
+            fat: 3.7,
+            carbs: 67,
+            protein: 4.3,
+          },
+          {
+            name: 'Gingerbread',
+            calories: 356,
+            fat: 16.0,
+            carbs: 49,
+            protein: 3.9,
+          },
+          {
+            name: 'Jelly bean',
+            calories: 375,
+            fat: 0.0,
+            carbs: 94,
+            protein: 0.0,
+          },
+          {
+            name: 'Lollipop',
+            calories: 392,
+            fat: 0.2,
+            carbs: 98,
+            protein: 0,
+          },
+          {
+            name: 'Honeycomb',
+            calories: 408,
+            fat: 3.2,
+            carbs: 87,
+            protein: 6.5,
+          },
+          {
+            name: 'Donut',
+            calories: 452,
+            fat: 25.0,
+            carbs: 51,
+            protein: 4.9,
+          },
+          {
+            name: 'KitKat',
+            calories: 518,
+            fat: 26.0,
+            carbs: 65,
+            protein: 7,
+          },
+        ]
+      },
+
+      editItem (item) {
+        this.editedIndex = this.desserts.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialog = true
+      },
+
+      deleteItem (item) {
+        this.editedIndex = this.desserts.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialogDelete = true
+      },
+
+      deleteItemConfirm () {
+        this.desserts.splice(this.editedIndex, 1)
+        this.closeDelete()
+      },
+
+      close () {
+        this.dialog = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+      },
+
+      closeDelete () {
+        this.dialogDelete = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+      },
+
+      save () {
+        if (this.editedIndex > -1) {
+          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        } else {
+          this.desserts.push(this.editedItem)
+        }
+        this.close()
+      },
+    },
+  }
 </script>
