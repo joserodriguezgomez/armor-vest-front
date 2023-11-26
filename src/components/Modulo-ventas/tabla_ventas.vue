@@ -2,26 +2,28 @@
   <v-data-table
     :headers="headers"
     :items="desserts"
-    :sort-by="[{ key: 'calories', order: 'asc' }]"
+    :sort-by="[{ key: 'producto', order: 'asc' }]"
   >
     <template v-slot:top>
-      <v-toolbar
-        flat
-      >
+      <v-toolbar flat>
         <v-toolbar-title>Registro de ventas</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
+        <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog
-          v-model="dialog"
-          max-width="500px"
-        >
-
-        <!-- boton registrar -->
+        <v-dialog v-model="dialog" max-width="500px">
+         
+          
+          <!-- boton registrar -->
           <template v-slot:activator="{ props }">
+            <v-btn
+              color="black"
+              dark
+              class="mb-2"
+              v-bind="props"
+              icon="mdi-filter"
+              @click="toggleFilter"
+            >
+            </v-btn>
+
             <v-btn
               color="black"
               dark
@@ -29,7 +31,6 @@
               v-bind="props"
               icon="mdi-plus"
             >
-              
             </v-btn>
             <v-btn
               color="Black"
@@ -37,10 +38,9 @@
               class="mb-2"
               v-bind="props"
               icon="mdi-upload"
+              @click="descargarExcell()"
             >
-              
             </v-btn>
-            
           </template>
           <v-card>
             <v-card-title>
@@ -50,54 +50,52 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.name"
-                      label="Dessert name"
+                      label="Cliente"
                     ></v-text-field>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.calories"
-                      label="Calories"
+                      v-model="editedItem.producto"
+                      label="Producto"
                     ></v-text-field>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
+                      v-model="editedItem.talla"
+                      label="Talla"
                     ></v-text-field>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
+                      v-model="editedItem.factura"
+                      label="Factura"
                     ></v-text-field>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
+                      v-model="editedItem.gd"
+                      label="GD"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.vencimiento"
+                      label="Vencimiento"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="editedItem.vendedor"
+                      label="Vendedor"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="8">
+                    <v-text-field
+                      v-model="editedItem.comentarios"
+                      label="Comentarios"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -106,30 +104,32 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn
-                color="blue-darken-1"
-                variant="text"
-                @click="close"
-              >
-                Cancel
+              <v-btn color="blue-darken-1" variant="text" @click="close">
+                Cancelar
               </v-btn>
-              <v-btn
-                color="blue-darken-1"
-                variant="text"
-                @click="save"
-              >
-                Save
+              <v-btn color="blue-darken-1" variant="text" @click="save">
+                Guardar
               </v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>
+          </v-dialog>
+       
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">¿Seguro que deseas eliminar esta venta?</v-card-title>
+            <v-card-title class="text-h5"
+              >¿Seguro que desea eliminar el registro?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancelar</v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">Seguro</v-btn>
+              <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
+                >Cancelar</v-btn
+              >
+              <v-btn
+                color="blue-darken-1"
+                variant="text"
+                @click="deleteItemConfirm"
+                >Seguro</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -137,216 +137,276 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-        <v-icon
-        size="small"
-        class="me-2"
-        @click="editItem(item)"
-        color="black"
-
-      >
+      <v-icon size="small" class="me-2" @click="viewItem(item)" color="black">
         mdi-eye
       </v-icon>
-      <v-icon
-        size="small"
-        class="me-2"
-        @click="editItem(item)"
-        color="black"
-
-      >
+      <v-icon size="small" class="me-2" @click="editItem(item)" color="black">
         mdi-pencil
       </v-icon>
-      <v-icon
-        size="small"
-        @click="deleteItem(item)"
-        color="black"
-
-      >
+      <v-icon size="small" @click="deleteItem(item)" color="black">
         mdi-delete
       </v-icon>
-      
     </template>
     <template v-slot:no-data>
-      <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
+      <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
   </v-data-table>
 </template>
 <script>
-  export default {
-    data: () => ({
-      dialog: false,
-      dialogDelete: false,
-      headers: [
+import exportXlsFile from "export-from-json";
+
+export default {
+  data: () => ({
+    filteredDesserts: [],
+    showFilter: false,
+    dialog: false,
+    dialogDelete: false,
+    dialogView: false,
+    headers: [
+      {
+        title: "Clientes",
+        align: "start",
+        sortable: false,
+        key: "name",
+      },
+      { title: "Producto", key: "producto" },
+      { title: "Talla", key: "talla" },
+      { title: "Factura", key: "factura" },
+      { title: "GD", key: "gd" },
+      { title: "Vencimiento", key: "vencimiento" },
+      { title: "Vendedor", key: "vendedor" },
+      { title: "Comentarios", key: "comentarios" },
+      { title: "Acción", key: "actions", sortable: false },
+    ],
+    desserts: [],
+    editedIndex: -1,
+    editedItem: {
+      name: "",
+      producto: "",
+      talla: "",
+      factura: 0,
+      gd: 0,
+      vencimiento: 0,
+      vendedor: "",
+      comentarios: "",
+    },
+    defaultItem: {
+      name: "",
+      producto: "",
+      talla: "",
+      factura: 0,
+      gd: 0,
+      vencimiento: 0,
+      vendedor: "",
+      comentarios: "",
+    },
+  }),
+
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? "Nuevo Registro" : "Editar Registro";
+    },
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+  },
+
+  created() {
+    this.initialize();
+  },
+
+  methods: {
+    initialize() {
+      this.desserts = [
         {
-          title: 'Dessert (100g serving)',
-          align: 'start',
-          sortable: false,
-          key: 'name',
+          name: "Muni Providencia",
+          producto: "Chaleco",
+          talla: "L",
+          factura: 24,
+          gd: 4.0,
+          vencimiento: 23,
+          vendedor: "Veronica",
+          comentarios: "",
         },
-        { title: 'Calories', key: 'calories' },
-        { title: 'Fat (g)', key: 'fat' },
-        { title: 'Carbs (g)', key: 'carbs' },
-        { title: 'Protein (g)', key: 'protein' },
-        { title: 'Actions', key: 'actions', sortable: false },
-      ],
-      desserts: [],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
-    }),
-
-    computed: {
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      },
+        {
+          name: "Banco Falabella",
+          producto: "Chaleco",
+          talla: "M",
+          factura: 37,
+          gd: 4.3,
+          vencimiento: 24,
+          vendedor: "Mileydis",
+          comentarios: "",
+        },
+        {
+          name: "Prosegur",
+          producto: "Chaleco",
+          talla: "L",
+          factura: 23,
+          gd: 6.0,
+          vencimiento: 23,
+          vendedor: "Veronica",
+          comentarios: "",
+        },
+        {
+          name: "Banco Ripley",
+          producto: "Funda",
+          talla: "S",
+          factura: 67,
+          gd: 4.3,
+          vencimiento: 23,
+          vendedor: "Veronica",
+          comentarios: "",
+        },
+        {
+          name: "Muni Las Condes",
+          producto: "Funda",
+          talla: "M",
+          factura: 49,
+          gd: 3.9,
+          vencimiento: 26,
+          vendedor: "Mileydis",
+          comentarios: "",
+        },
+        {
+          name: "Muni La Serena",
+          producto: "Funda",
+          talla: "XL",
+          factura: 94,
+          gd: 0.0,
+          vencimiento: 26,
+          vendedor: "Mileydis",
+          comentarios: "",
+        },
+        {
+          name: "Banco Ripley",
+          producto: "Chaleco",
+          talla: "M",
+          factura: 98,
+          gd: 0,
+          vencimiento: 25,
+          vendedor: "Mileydis",
+          comentarios: "",
+        },
+        {
+          name: "Prosegur",
+          producto: "Chaleco",
+          talla: "S",
+          factura: 87,
+          gd: 6.5,
+          vencimiento: 25,
+          vendedor: "Veronica",
+          comentarios: "",
+        },
+        {
+          name: "Banco Santander",
+          producto: "Chaleco",
+          talla: "L",
+          factura: 51,
+          gd: 4.9,
+          vencimiento: 28,
+          vendedor: "Mileydis",
+          comentarios: "",
+        },
+        {
+          name: "Muni Lo Ovalle",
+          producto: "Chaleco",
+          talla: "XL",
+          factura: 65,
+          gd: 7,
+          vencimiento: 28,
+          vendedor: "Veronica",
+          comentarios: "",
+        },
+      ];
     },
 
-    watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      dialogDelete (val) {
-        val || this.closeDelete()
-      },
+    editItem(item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
     },
 
-    created () {
-      this.initialize()
+    deleteItem(item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+    viewItem(item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogView = true;
     },
 
-    methods: {
-      initialize () {
-        this.desserts = [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-          },
-        ]
-      },
-
-      editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
-
-      deleteItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialogDelete = true
-      },
-
-      deleteItemConfirm () {
-        this.desserts.splice(this.editedIndex, 1)
-        this.closeDelete()
-      },
-
-      close () {
-        this.dialog = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
-      closeDelete () {
-        this.dialogDelete = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
-        } else {
-          this.desserts.push(this.editedItem)
-        }
-        this.close()
-      },
+    deleteItemConfirm() {
+      this.desserts.splice(this.editedIndex, 1);
+      this.closeDelete();
     },
-  }
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    save() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+      } else {
+        this.desserts.push(this.editedItem);
+      }
+      this.close();
+    },
+    descargarExcell() {
+  const data = this.showFilter ? this.filteredDesserts : this.desserts;
+
+  const options = {
+    data: data.map(item => ({
+      Clientes: item.name,
+      Producto: item.producto,
+      Talla: item.talla,
+      Factura: item.factura,
+      GD: item.gd,
+      Vencimiento: item.vencimiento,
+      Vendedor: item.vendedor,
+      Comentarios: item.comentarios,
+    })),
+    fileName: 'ventas',
+    exportType: exportFromJSON.types.xls,
+  };
+
+  exportFromJSON(options);
+
+   
+},
+  },
+   toggleFilter() {
+    if (this.showFilter) {
+      // Aplicar filtro si está activado
+      this.filteredDesserts = this.desserts.filter(item => {
+        // Reemplaza 'texto_a_filtrar' con el texto real que estás buscando
+        return item.name.toLowerCase().includes(this.desserts.toLowerCase());
+      });
+    } else {
+      // Limpiar el filtro si está desactivado
+      this.filteredDesserts = [];
+    }
+  },
+};
 </script>
