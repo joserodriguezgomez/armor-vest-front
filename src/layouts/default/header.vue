@@ -2,18 +2,23 @@
   <div>
     <v-toolbar density="compact" color="black">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
-      <img src="@/assets/armor2.png" alt="Imagen de perfil" class="imagen-perfil">
-      
+      <img
+        src="@/assets/armor2.png"
+        alt="Imagen de perfil"
+        class="imagen-perfil"
+      />
+
       <v-spacer> </v-spacer>
 
+      <!-- boton notificaciones -->
       <v-btn class="text-none" stacked>
-      <v-badge content="2" color="error">
-        <v-icon>mdi-bell-outline</v-icon>
-      </v-badge>
-    </v-btn>
+        <v-badge content="2" color="error">
+          <v-icon>mdi-bell-outline</v-icon>
+        </v-badge>
+      </v-btn>
 
       <v-btn icon>
-         <v-icon icon="mdi-account-circle"></v-icon>  
+        <v-icon icon="mdi-account-circle"></v-icon>
       </v-btn>
 
       <v-btn icon>
@@ -22,7 +27,6 @@
     </v-toolbar>
   </div>
 </template>
-
 
 
 
@@ -37,10 +41,9 @@
 .imagen-perfil {
   width: 100px; /* Ancho personalizado */
   height: 40px; /* Alto personalizado */
- /* Forma de círculo (opcional) */
+  /* Forma de círculo (opcional) */
   /* Otros estilos personalizados según tus necesidades */
 }
-
 </style>
 
 <!-- amarillo armor-vest
