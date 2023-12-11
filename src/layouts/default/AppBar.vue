@@ -51,9 +51,16 @@
             value="productos"
             to="/productos"
           ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-folder-outline"
+            title="Polizas"
+            value="polizas"
+            to="/polizas"
+          ></v-list-item>
         </v-list>
       </v-navigation-drawer>
       <v-main class="custom-main" style="height: 850px">
+        <div class="main-header">header-main</div>
         <router-view></router-view>
       </v-main>
     </v-layout>
@@ -77,6 +84,31 @@ export default {
 .custom-main {
   background: #f1f2f4; 
 }
+
+
+.main-header {
+  background-color: #FFB71A;  /* Color de fondo: Azul oscuro, puedes cambiarlo */
+  color: rgba(0, 0, 0, 0.7);              /* Color del texto */
+  padding: 10px 20px;        /* Relleno: 15px arriba/abajo, 20px izquierda/derecha */
+  text-align: center;        /* Alineación del texto: centrado */     /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar efecto elevado */
+  font-size: 1.5rem;         /* Tamaño de la fuente */
+  font-weight: 500;          /* Grosor de la fuente */
+  margin-bottom: 3px;       /* Espacio debajo del encabezado */
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+  .main-header {
+    font-size: 1.2rem;       /* Tamaño de fuente más pequeño para pantallas pequeñas */
+    padding: 10px 15px;      /* Relleno más pequeño para pantallas pequeñas */
+  }
+}
+
+
+
 </style>
 
-// background: #e2e5e8
+
+
+

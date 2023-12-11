@@ -1,4 +1,10 @@
-// Utilities
-import { createPinia } from 'pinia'
+import { createStore } from 'vuex';
+import polizas from './modules/polizas';
 
-export default createPinia()
+
+export default createStore({
+  modules: {
+    polizas
+
+  }
+});

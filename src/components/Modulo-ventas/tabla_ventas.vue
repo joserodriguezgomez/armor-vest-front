@@ -1,5 +1,10 @@
 <template>
-  <v-data-table :headers="headers" :items="desserts" :sort-by="[{ key: 'producto', order: 'asc' }]">
+  <v-data-table 
+    :headers="headers" 
+    :items="desserts" 
+    :sort-by="[{ key: 'producto', order: 'asc' }]"
+    
+    >
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Registro de ventas</v-toolbar-title>
@@ -105,21 +110,12 @@ export default {
     dialogDelete: false,
     dialogView: false,
     headers: [
-      {
-        title: "Clientes",
-        align: "start",
-        sortable: false,
-        key: "name"
-      },
-      { title: "Producto", key: "producto" },
-      { title: "Talla", key: "talla" },
-      { title: "Factura", key: "factura" },
-      { title: "GD", key: "gd" },
-      { title: "Vencimiento", key: "vencimiento" },
-      { title: "Vendedor", key: "vendedor" },
-      { title: "Comentarios", key: "comentarios" },
-      { title: "Acción", key: "actions", sortable: false }
-    ],
+        { text: 'Fecha de Elaboración', value: 'fechaElaboracion' },
+        { text: 'Talla', value: 'talla' },
+        { text: 'Fecha de Vencimiento', value: 'fechaVencimiento' },
+        // otras columnas, pero no '_id'
+      ],
+
     desserts: [],
     editedIndex: -1,
     editedItem: {
@@ -164,6 +160,9 @@ export default {
   },
 
   methods: {
+    bla(row){
+      console.log(row)
+    },
     initialize() {
       this.desserts = [
         {
