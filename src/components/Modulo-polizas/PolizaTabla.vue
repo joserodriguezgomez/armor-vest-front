@@ -25,7 +25,7 @@
               class="mb-2"
               v-bind="props"
             >
-              New Item
+              Nueva Poliza
             </v-btn>
           </template>
           <v-card>
@@ -68,14 +68,14 @@
                 variant="text"
                 @click="close"
               >
-                Cancel
+                Cancelar
               </v-btn>
               <v-btn
                 color="blue-darken-1"
                 variant="text"
                 @click="save"
               >
-                Save
+                Guardar
               </v-btn>
             </v-card-actions>
           </v-card>

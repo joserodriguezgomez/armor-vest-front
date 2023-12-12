@@ -5,7 +5,7 @@
         <polizaTable  />
       </v-col>
       <v-col cols="5">
-       bla
+       
       </v-col>
     </v-row>
   </v-container>

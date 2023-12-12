@@ -32,14 +32,10 @@
           ></v-img>
         </template>
 
-        <template v-slot:item.Perfil="{ item }">
-          <v-rating
-            :model-value="item.Perfil"
-            color="orange-darken-2"
-            density="compact"
-            size="small"
-            readonly
-          ></v-rating>
+       <template v-slot:item.Perfil="{ item }">
+          <v-col>
+            {{ item.Perfil }}
+          </v-col>
         </template>
 
         

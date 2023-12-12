@@ -2,7 +2,7 @@
 
   <v-data-table
     :headers="headers"
-    :items="search ? filteredDesserts : desserts"
+    :items="search ? filteredDesserts : allDesserts"
     :sort-by="[{ key: 'producto', order: 'asc' }]"
   >
 
@@ -232,6 +232,7 @@
   </v-data-table>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import exportFromJSON from "export-from-json";
 
 export default {
@@ -289,6 +290,7 @@ export default {
   }),
 
   computed: {
+    ...mapGetters('ventasModule', ['allDesserts']), // Mapea el getter desde el módulo 'ventasModule'
     formTitle() {
       return this.editedIndex === -1 ? "Nuevo Registro" : "Editar Registro";
     },
@@ -313,122 +315,9 @@ export default {
   },
 
   methods: {
-    bla(row){
-      console.log(row)
-    },
-    initialize() {
-      this.desserts = [
-        {
-          name: "Muni Providencia",
-          producto: "Chaleco",
-          talla: "L",
-          factura: 24,
-          gd: 4.0,
-          vencimiento: null,
-          vendedor: "Veronica",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-        {
-          name: "Banco Falabella",
-          producto: "Chaleco",
-          talla: "M",
-          factura: 37,
-          gd: 4.3,
-          vencimiento: null,
-          vendedor: "Mileydis",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-        {
-          name: "Prosegur",
-          producto: "Chaleco",
-          talla: "L",
-          factura: 23,
-          gd: 6.0,
-          vencimiento: null,
-          vendedor: "Veronica",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-        {
-          name: "Banco Ripley",
-          producto: "Funda",
-          talla: "S",
-          factura: 67,
-          gd: 4.3,
-          vencimiento: null,
-          vendedor: "Veronica",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-        {
-          name: "Muni Las Condes",
-          producto: "Funda",
-          talla: "M",
-          factura: 49,
-          gd: 3.9,
-          vencimiento: null,
-          vendedor: "Mileydis",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-        {
-          name: "Muni La Serena",
-          producto: "Funda",
-          talla: "XL",
-          factura: 94,
-          gd: 0.0,
-          vencimiento: null,
-          vendedor: "Mileydis",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-        {
-          name: "Banco Ripley",
-          producto: "Chaleco",
-          talla: "M",
-          factura: 98,
-          gd: 0,
-          vencimiento: null,
-          vendedor: "Mileydis",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-        {
-          name: "Prosegur",
-          producto: "Chaleco",
-          talla: "S",
-          factura: 87,
-          gd: 6.5,
-          vencimiento: null,
-          vendedor: "Veronica",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-        {
-          name: "Banco Santander",
-          producto: "Chaleco",
-          talla: "L",
-          factura: 51,
-          gd: 4.9,
-          vencimiento: null,
-          vendedor: "Mileydis",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-        {
-          name: "Muni Lo Ovalle",
-          producto: "Chaleco",
-          talla: "XL",
-          factura: 65,
-          gd: 7,
-          vencimiento: null,
-          vendedor: "Veronica",
-          comentarios: "",
-          archivoAdjunto: null,
-        },
-      ];
+    ...mapActions('ventasModule', ['initialize']), // Mapea la acción desde el módulo 'ventasModule'
+    bla(row) {
+      console.log(row);
     },
 
     editItem(item) {
