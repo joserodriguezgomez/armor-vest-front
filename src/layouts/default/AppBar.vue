@@ -59,7 +59,7 @@
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-main class="custom-main" style="height: 850px">
+      <v-main class="custom-main" style="height: 1300px">
         <div class="main-header">header-main</div>
         <router-view></router-view>
       </v-main>
