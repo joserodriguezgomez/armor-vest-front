@@ -1,10 +1,5 @@
 <template>
-  <v-data-table 
-    :headers="polizaHeaders" 
-    :items="polizas" 
-    :sort-by="[{ key: 'ID', order: 'desc' }]"
-    @click:row="handleRowClick"
-    >
+  <v-data-table :headers="chalecoHeaders" :items="chalecos">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>{{}}</v-toolbar-title>
@@ -59,26 +54,30 @@
   </v-data-table>
 </template>
 <script>
+
+
 import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 
 export default {
   data: () => ({
     editedItemLocal: {
-      ID: "local",
-      LOTE: "",
-      SERIE: "",
-      TALLA: 0,
-      IDIC: "",
-      POLIZA: ""
+      ID_CHALECO: "",
+      ID_POLIZA: "",
+      MODELO: "",
+      TALLA: "",
+      VENCIMIENTO_FUNDA: "",
+      VENCIMIENTO_PANEL: "",
+      CLIENTE : ""
       // ... otros campos
     },
     editedItemDefault: {
-      ID: "",
-      LOTE: "",
-      SERIE: "",
+      ID_CHALECO: "",
+      ID_POLIZA: "",
+      MODELO: "",
       TALLA: "",
-      IDIC: "",
-      POLIZA: "",
+      VENCIMIENTO_FUNDA: "",
+      VENCIMIENTO_PANEL: "",
+      CLIENTE : ""
       // ... otros campos
     },
     dialog: false,
@@ -87,16 +86,14 @@ export default {
   }),
 
   computed: {
-    ...mapGetters("polizas", ["getPolizas", "getPolizaHeaders"]),
-    ...mapState("polizas", [
+    ...mapState("chalecos", [
       "editedItem",
       "fields",
-      "polizas",
-      "poli",
-      "polizaHeaders"
+      "chalecos",
+      "chalecoHeaders"
     ]),
     formTitle() {
-      return this.editedIndex === -1 ? "Nueva Poliza" : "Editar Poliza";
+      return this.editedIndex === -1 ? "Nuev chaleco" : "Editar chaleco";
     }
   },
 
@@ -112,27 +109,23 @@ export default {
   created() {},
 
   methods: {
-    ...mapMutations("polizas", ["updateField"]),
-    ...mapActions("polizas", ["updateDessert", "createPoliza", "deletePoliza"]),
+    ...mapMutations("chalecos", ["updateField"]),
+    ...mapActions("chalecos", ["updateChaleco", "createChaleco", "deleteChaleco"]),
 
-    handleRowClick(event, item) {
-      this.$emit('selected-poliza', item.item);
-    },
     editItem(item) {
-      console.log("editando");
-      this.editedIndex = this.polizas.indexOf(item);
+      this.editedIndex = this.chalecos.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.polizas.indexOf(item);
+      this.editedIndex = this.chalecos.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("polizas/deletePoliza", { index: this.editedIndex });
+      this.$store.dispatch("chalecos/deleteChaleco", { index: this.editedIndex });
       this.closeDelete();
     },
 
@@ -147,16 +140,15 @@ export default {
 
     save() {
       this.dialog = false;
-      console.log("guardando");
       if (this.editedIndex > -1) {
         // Object.assign(this.bla[this.editedIndex], this.editedItem)
-        this.$store.dispatch("polizas/updateDessert", {
+        this.$store.dispatch("chalecos/updateChaleco", {
           index: this.editedIndex,
           item: this.editedItemLocal
         });
         this.editedItemLocal = this.editedItemDefault;
       } else {
-        this.$store.dispatch("polizas/createPoliza", {
+        this.$store.dispatch("chalecos/createChaleco", {
           item: this.editedItemLocal
         });
       }
@@ -164,4 +156,3 @@ export default {
   }
 };
 </script>
-
