@@ -60,16 +60,16 @@
             value="polizas"
             to="/polizas"
           ></v-list-item>
-           <v-list-item
-            prepend-icon="mdi-account-group"
-            title="Usuarios"
-            value="usuarios"
-            to="/usuarios"
+          <v-list-item
+            prepend-icon="mdi-folder-outline"
+            title="Polizas"
+            value="polizas"
+            to="/polizas"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
       <v-main class="custom-main" style="height: 1300px">
-        <div class="main-header">header-main</div>
+        <div class="main-header">{{this.main_title}}</div>
         <router-view></router-view>
       </v-main>
     </v-layout>
@@ -77,6 +77,8 @@
 </template>
 
 <script>
+import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -84,6 +86,9 @@ export default {
       rail: true,
     };
   },
+  computed:{
+    ...mapState('menu', ['main_title'])
+  }
 };
 </script>
 
