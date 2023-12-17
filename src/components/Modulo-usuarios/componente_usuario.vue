@@ -1,7 +1,7 @@
 <template>
   <v-data-table
-    :headers="ventasHeaders"
-    :items="search ? filteredVentas : ventas"
+    :headers="usuariosHeaders"
+    :items="search ? filteredUsuarios : usuarios"
     :sort-by="[{ key: 'ID', order: 'desc' }]"
   >
     <template v-slot:top>
@@ -42,14 +42,7 @@
               size="x-large"
               color="Black"
             ></v-btn>
-            <v-btn
-              density="compact"
-              icon="mdi-filter"
-              size="x-large"
-              color="black"
-              @click="showFilterMenu = !showFilterMenu"
-            >
-            </v-btn>
+            
           </template>
           <v-card>
             <v-card-title>
@@ -171,10 +164,10 @@ export default {
   }),
 
   computed: {
-    ...mapGetters("ventas", ["getVentas", "getventasHeaders"]),
-    ...mapState("ventas", ["editedItem", "fields", "ventas", "ventasHeaders"]),
+    ...mapGetters("usuarios", ["getUsuarios", "getusuariosHeaders"]),
+    ...mapState("usuarios", ["editedItem", "fields", "usuarios", "usuariosHeaders"]),
     formTitle() {
-      return this.editedIndex === -1 ? "Nueva Venta" : "Editar Venta";
+      return this.editedIndex === -1 ? "Nueva Usuarios" : "Editar Usuarios";
     },
   },
 
@@ -186,7 +179,7 @@ export default {
       val || this.closeDelete();
     },
     search: function (newSearch) {
-      this.filteredVentas = this.ventas.filter((item) => {
+      this.filteredUsuarios = this.usuarios.filter((item) => {
         return Object.values(item).some((value) =>
           String(value).toLowerCase().includes(newSearch.toLowerCase())
         );
@@ -197,23 +190,23 @@ export default {
   created() {},
 
   methods: {
-    ...mapActions("ventas", ["updateDessert", "createVenta", "deleteVenta"]),
+    ...mapActions("usuarios", ["updateDessert", "createUsuario", "deleteUsuario"]),
 
     editItem(item) {
       console.log("editando");
-      this.editedIndex = this.ventas.indexOf(item);
+      this.editedIndex = this.usuarios.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.ventas.indexOf(item);
+      this.editedIndex = this.usuarios.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("ventas/deleteVenta", { index: this.editedIndex });
+      this.$store.dispatch("usuarios/deleteUsuario", { index: this.editedIndex });
       this.closeDelete();
     },
 
@@ -231,21 +224,21 @@ export default {
       console.log("guardando");
       if (this.editedIndex > -1) {
         // Object.assign(this.bla[this.editedIndex], this.editedItem)
-        this.$store.dispatch("ventas/updateDessert", {
+        this.$store.dispatch("usuarios/updateDessert", {
           index: this.editedIndex,
           item: this.editedItemLocal,
         });
         this.editedItemLocal = this.editedItemDefault;
       } else {
-        this.$store.dispatch("ventas/createVenta", {
+        this.$store.dispatch("usuarios/createUsuario", {
           item: this.editedItemLocal,
         });
       }
     },
 
     descargarExcell() {
-      const data = this.showFilter ? this.filteredVentas : this.ventas;
-      const fileName = "RegistroVentas";
+      const data = this.showFilter ? this.filteredUsuarios : this.usuarios;
+      const fileName = "RegistroUsuarios";
       const exportType = exportFromJSON.types.xls;
       exportFromJSON({ data, fileName, exportType });
     },

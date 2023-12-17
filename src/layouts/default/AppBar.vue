@@ -47,12 +47,6 @@
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-folder-outline"
-            title="Productos"
-            value="productos"
-            to="/productos"
-          ></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-folder-outline"
             title="Polizas"
             value="polizas"
             to="/polizas"
@@ -62,6 +56,12 @@
             title="chalecos"
             value="chalecos"
             to="/chalecos"
+          ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-folder-outline"
+            title="usuarios"
+            value="usuarios"
+            to="/usuarios"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>

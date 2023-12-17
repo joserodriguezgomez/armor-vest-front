@@ -1,7 +1,7 @@
 <template>
   <v-data-table
-    :headers="ventasHeaders"
-    :items="search ? filteredVentas : ventas"
+    :headers="clientesHeaders"
+    :items="search ? filteredClientes : clientes"
     :sort-by="[{ key: 'ID', order: 'desc' }]"
   >
     <template v-slot:top>
@@ -127,38 +127,26 @@ import exportFromJSON from "export-from-json";
 export default {
   data: () => ({
     editedItemLocal: {
-      ID: "",
-      LOTE: "",
-      SERIE: "",
-      TALLA: 0,
-      MODELO: "",
-      IDIC: "",
-      POLIZA: 0,
-      FACTURA: 0,
-      GD: 0,
-      CLIENTE: "",
-      VEN_FUNDA: new Date(),
-      VEN_PANEL: new Date(),
-      VENDEDOR: "",
+      ID: 0,
+      NOMBRE: "",
+      RUT: 0,
+      DIRECCION: "",
+      CONTACTO: "",
+      CORREO: "",
+      TELEFONO: 0,
       COMENTARIOS: "",
       ADJUNTO: null,
 
       // ... otros campos
     },
     editedItemDefault: {
-      ID: "",
-      LOTE: "",
-      SERIE: "",
-      TALLA: 0,
-      MODELO: "",
-      IDIC: "",
-      POLIZA: 0,
-      FACTURA: 0,
-      GD: 0,
-      CLIENTE: "",
-      VEN_FUNDA: new Date(),
-      VEN_PANEL: new Date(),
-      VENDEDOR: "",
+      ID: 0,
+      NOMBRE: "",
+      RUT: 0,
+      DIRECCION: "",
+      CONTACTO: "",
+      CORREO: "",
+      TELEFONO: 0,
       COMENTARIOS: "",
       ADJUNTO: null,
       // ... otros campos
@@ -171,10 +159,10 @@ export default {
   }),
 
   computed: {
-    ...mapGetters("ventas", ["getVentas", "getventasHeaders"]),
-    ...mapState("ventas", ["editedItem", "fields", "ventas", "ventasHeaders"]),
+    ...mapGetters("clientes", ["getClientes", "getClientesHeaders"]),
+    ...mapState("clientes", ["editedItem", "fields", "clientes", "clientesHeaders"]),
     formTitle() {
-      return this.editedIndex === -1 ? "Nueva Venta" : "Editar Venta";
+      return this.editedIndex === -1 ? "Nuevo Cliente" : "Editar cliente";
     },
   },
 
@@ -186,7 +174,7 @@ export default {
       val || this.closeDelete();
     },
     search: function (newSearch) {
-      this.filteredVentas = this.ventas.filter((item) => {
+      this.filteredClientes = this.clientes.filter((item) => {
         return Object.values(item).some((value) =>
           String(value).toLowerCase().includes(newSearch.toLowerCase())
         );
@@ -197,23 +185,23 @@ export default {
   created() {},
 
   methods: {
-    ...mapActions("ventas", ["updateDessert", "createVenta", "deleteVenta"]),
+    ...mapActions("clientes", ["updateDessert", "createCliente", "deleteCliente"]),
 
     editItem(item) {
       console.log("editando");
-      this.editedIndex = this.ventas.indexOf(item);
+      this.editedIndex = this.clientes.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.ventas.indexOf(item);
+      this.editedIndex = this.clientes.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("ventas/deleteVenta", { index: this.editedIndex });
+      this.$store.dispatch("clientes/deleteCliente", { index: this.editedIndex });
       this.closeDelete();
     },
 
@@ -231,21 +219,21 @@ export default {
       console.log("guardando");
       if (this.editedIndex > -1) {
         // Object.assign(this.bla[this.editedIndex], this.editedItem)
-        this.$store.dispatch("ventas/updateDessert", {
+        this.$store.dispatch("clientes/updateDessert", {
           index: this.editedIndex,
           item: this.editedItemLocal,
         });
         this.editedItemLocal = this.editedItemDefault;
       } else {
-        this.$store.dispatch("ventas/createVenta", {
+        this.$store.dispatch("clientes/createCliente", {
           item: this.editedItemLocal,
         });
       }
     },
 
     descargarExcell() {
-      const data = this.showFilter ? this.filteredVentas : this.ventas;
-      const fileName = "RegistroVentas";
+      const data = this.showFilter ? this.filteredClientes : this.clientes;
+      const fileName = "RegistroClientes";
       const exportType = exportFromJSON.types.xls;
       exportFromJSON({ data, fileName, exportType });
     },
