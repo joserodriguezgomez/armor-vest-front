@@ -1,82 +1,248 @@
 <template>
-  <v-container fluid>
-    <v-card flat>
-      <v-card-title class="d-flex align-center pe-2">
-        <v-icon icon="mdi-account-group"></v-icon> &nbsp; Usuarios
+  <v-data-table
+    :headers="usuariosHeaders"
+    :items="search ? filteredUsuarios : usuarios"
+    :sort-by="[{ key: 'ID', order: 'desc' }]"
+  >
+    <template v-slot:top>
+      <v-toolbar flat>
+        <v-toolbar-title
+          >{{}}
+          <v-row align="center">
+            <v-col cols="8" sm="6" md="8">
+              <v-text-field
+                v-model="search"
+                prepend-inner-icon="mdi-magnify"
+                density="compact"
+                label="Search"
+                single-line
+                flat
+                hide-details
+                variant="solo-filled"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-toolbar-title>
 
+        <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              density="compact"
+              icon="mdi-plus"
+              v-bind="props"
+              size="x-large"
+              color="black"
+            ></v-btn>
+            <v-btn
+              density="compact"
+              icon="mdi-download"
+              @click="descargarExcell()"
+              size="x-large"
+              color="Black"
+            ></v-btn>
+            
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">{{ formTitle }}</span>
+            </v-card-title>
 
-        <v-text-field
-          v-model="search"
-          prepend-inner-icon="mdi-magnify"
-          density="compact"
-          label="Buscar Usuario"
-          single-line
-          flat
-          hide-details
-          variant="solo-filled"
-        ></v-text-field>
-      </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col
+                    v-for="field in fields"
+                    :key="field.model"
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      :label="field.label"
+                      v-model="editedItemLocal[field.model]"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
 
-      <v-divider></v-divider>
-      <v-data-table v-model:search="search" :items="items">
-        <template v-slot:header.stock>
-         
-        </template>
+            <v-card-actions>
+              <v-spacer></v-spacer>
 
-        <template v-slot:item.Usuario="{ item }">
-          <v-img
-            src="@/assets/foto_usuario.png"
-            alt="Imagen de perfil"
-            class="imagen-perfil"
-          ></v-img>
-        </template>
-
-       <template v-slot:item.Perfil="{ item }">
-          <v-col>
-            {{ item.Perfil }}
-          </v-col>
-        </template>
-
-        
-      </v-data-table>
-    </v-card>
-  </v-container>
+              <v-btn color="blue-darken-1" variant="text" @click="close"
+                >Cancelar</v-btn
+              >
+              <v-btn color="blue-darken-1" variant="text" @click="save"
+                >Guardar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5"
+              >¿Esta seguro de eliminar este registro?</v-card-title
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
+                >Cancelar</v-btn
+              >
+              <v-btn
+                color="blue-darken-1"
+                variant="text"
+                @click="deleteItemConfirm"
+                >Eliminar</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+    <template v-slot:item.actions="{ item }">
+      <v-icon size="small" class="me-2" @click="editItem(item)"
+        >mdi-pencil</v-icon
+      >
+      <v-icon size="small" @click="deleteItem(item)">mdi-delete</v-icon>
+    </template>
+    <template v-slot:no-data>
+      <v-btn color="primary" @click="initialize">Reset</v-btn>
+    </template>
+  </v-data-table>
 </template>
 <script>
+import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
+import exportFromJSON from "export-from-json";
+
 export default {
-  data() {
-    return {
-      search: "",
-      items: [
-        {
-          Nombre: "Andres Aguayo",
-          Usuario: "aguayo14", 
-          Correo: "andres@aguayo.legal",
-          Perfil: "Administrador",
-        },
-        {
-          Nombre: "Valentina Mejias",
-          Usuario: "valem",
-          Correo: "valentina.mejias@armorvest.cl",
-          Perfil: "Usuario",
-        },
-        {
-          Nombre: "Mileydis Sotolongo ",
-          Usuario: "Mily",
-          Correo: "msotolongo@aguayo.legal",
-          Perfil: "Vendedor",
-        },
-      ],
-    };
+  data: () => ({
+    editedItemLocal: {
+      ID: "",
+      LOTE: "",
+      SERIE: "",
+      TALLA: 0,
+      MODELO: "",
+      IDIC: "",
+      POLIZA: 0,
+      FACTURA: 0,
+      GD: 0,
+      CLIENTE: "",
+      VEN_FUNDA: new Date(),
+      VEN_PANEL: new Date(),
+      VENDEDOR: "",
+      COMENTARIOS: "",
+      ADJUNTO: null,
+
+      // ... otros campos
+    },
+    editedItemDefault: {
+      ID: "",
+      LOTE: "",
+      SERIE: "",
+      TALLA: 0,
+      MODELO: "",
+      IDIC: "",
+      POLIZA: 0,
+      FACTURA: 0,
+      GD: 0,
+      CLIENTE: "",
+      VEN_FUNDA: new Date(),
+      VEN_PANEL: new Date(),
+      VENDEDOR: "",
+      COMENTARIOS: "",
+      ADJUNTO: null,
+      // ... otros campos
+    },
+    dialog: false,
+    dialogDelete: false,
+    editedIndex: -1,
+    filteredVentas: [],
+    search: "",
+  }),
+
+  computed: {
+    ...mapGetters("usuarios", ["getUsuarios", "getusuariosHeaders"]),
+    ...mapState("usuarios", ["editedItem", "fields", "usuarios", "usuariosHeaders"]),
+    formTitle() {
+      return this.editedIndex === -1 ? "Nueva Usuarios" : "Editar Usuarios";
+    },
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+    search: function (newSearch) {
+      this.filteredUsuarios = this.usuarios.filter((item) => {
+        return Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(newSearch.toLowerCase())
+        );
+      });
+    },
+  },
+
+  created() {},
+
+  methods: {
+    ...mapActions("usuarios", ["updateDessert", "createUsuario", "deleteUsuario"]),
+
+    editItem(item) {
+      console.log("editando");
+      this.editedIndex = this.usuarios.indexOf(item);
+      this.editedItemLocal = Object.assign({}, item);
+      this.dialog = true;
+    },
+
+    deleteItem(item) {
+      this.editedIndex = this.usuarios.indexOf(item);
+      this.editedItemLocal = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+
+    deleteItemConfirm() {
+      this.$store.dispatch("usuarios/deleteUsuario", { index: this.editedIndex });
+      this.closeDelete();
+    },
+
+    close() {
+      this.dialog = false;
+      this.editedItemLocal = this.editedItemDefault;
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+    },
+
+    save() {
+      this.dialog = false;
+      console.log("guardando");
+      if (this.editedIndex > -1) {
+        // Object.assign(this.bla[this.editedIndex], this.editedItem)
+        this.$store.dispatch("usuarios/updateDessert", {
+          index: this.editedIndex,
+          item: this.editedItemLocal,
+        });
+        this.editedItemLocal = this.editedItemDefault;
+      } else {
+        this.$store.dispatch("usuarios/createUsuario", {
+          item: this.editedItemLocal,
+        });
+      }
+    },
+
+    descargarExcell() {
+      const data = this.showFilter ? this.filteredUsuarios : this.usuarios;
+      const fileName = "RegistroUsuarios";
+      const exportType = exportFromJSON.types.xls;
+      exportFromJSON({ data, fileName, exportType });
+    },
   },
 };
 </script>
 
-<style scoped>
-.imagen-perfil {
-  width: 50px; /* Ancho personalizado */
-  height: 60px; /* Alto personalizado */
-  border-radius: 0%; /* Forma de círculo (opcional) */
-}
-</style>

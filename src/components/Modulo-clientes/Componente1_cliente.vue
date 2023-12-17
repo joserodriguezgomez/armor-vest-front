@@ -1,221 +1,169 @@
 <template>
-  <v-container fluid>
-    <v-data-table
-      :headers="headers"
-      :items="search ? filteredDesserts : allClientes"
-      :sort-by="[{ key: 'producto', order: 'asc' }]"
-    >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-text-field
-            v-model="search"
-            prepend-inner-icon="mdi-magnify"
-            density="compact"
-            label="Search"
-            single-line
-            flat
-            hide-details
-            variant="solo-filled"
-          ></v-text-field>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="1000px">
-            <!-- boton registrar -->
-            <template v-slot:activator="{ props }">
-              <v-btn
-                color="black"
-                dark
-                class="mb-2"
-                icon="mdi-filter"
-                @click="toggleFilter"
+  <v-data-table
+    :headers="clientesHeaders"
+    :items="search ? filteredClientes : clientes"
+    :sort-by="[{ key: 'ID', order: 'desc' }]"
+  >
+    <template v-slot:top>
+      <v-toolbar flat>
+        <v-toolbar-title
+          >{{}}
+          <v-row align="center">
+            <v-col cols="8" sm="6" md="8">
+              <v-text-field
+                v-model="search"
+                prepend-inner-icon="mdi-magnify"
+                density="compact"
+                label="Search"
+                single-line
+                flat
+                hide-details
+                variant="solo-filled"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-toolbar-title>
+
+        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-spacer></v-spacer>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              density="compact"
+              icon="mdi-plus"
+              v-bind="props"
+              size="x-large"
+              color="black"
+            ></v-btn>
+            <v-btn
+              density="compact"
+              icon="mdi-download"
+              @click="descargarExcell()"
+              size="x-large"
+              color="Black"
+            ></v-btn>
+            <v-btn
+              density="compact"
+              icon="mdi-filter"
+              size="x-large"
+              color="black"
+              @click="showFilterMenu = !showFilterMenu"
+            >
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">{{ formTitle }}</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col
+                    v-for="field in fields"
+                    :key="field.model"
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      :label="field.label"
+                      v-model="editedItemLocal[field.model]"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn color="blue-darken-1" variant="text" @click="close"
+                >Cancelar</v-btn
               >
-              </v-btn>
-
-              <v-btn
-                color="black"
-                dark
-                class="mb-2"
-                v-bind="props"
-                icon="mdi-plus"
+              <v-btn color="blue-darken-1" variant="text" @click="save"
+                >Guardar</v-btn
               >
-              </v-btn>
-
-              <v-btn
-                color="Black"
-                dark
-                class="mb-2"
-                icon="mdi-upload"
-                @click="descargarExcell()"
-              ></v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.nombre"
-                        label="Nombre"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.rut"
-                        label="Rut"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.direccion"
-                        label="Dirección"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.contacto"
-                        label="Contacto"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.correo"
-                        label="Correo"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.telefono"
-                        label="Telefono"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="8">
-                      <v-text-field
-                        v-model="editedItem.comentarios"
-                        label="Comentarios"
-                      ></v-text-field>
-                      <v-file-input
-                        v-model="editedItem.archivoAdjunto"
-                        label="Adjuntar Archivo"
-                        show-size
-                        show-overflow
-                        accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
-                      ></v-file-input>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="close"
-                  >Cancelar</v-btn
-                >
-                <v-btn color="blue-darken-1" variant="text" @click="save"
-                  >Guardar</v-btn
-                >
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5"
-                >¿Seguro que desea eliminar el registro?</v-card-title
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5"
+              >¿Esta seguro de eliminar este registro?</v-card-title
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
+                >Cancelar</v-btn
               >
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
-                  >Cancelar</v-btn
-                >
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="deleteItemConfirm"
-                  >Seguro</v-btn
-                >
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
-
-      <template v-slot:item.actions="{ item }">
-        <v-icon size="small" class="me-2" @click="editItem(item)" color="black"
-          >mdi-pencil</v-icon
-        >
-        <v-icon size="small" @click="deleteItem(item)" color="black"
-          >mdi-delete</v-icon
-        >
-      </template>
-
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
-      </template>
-    </v-data-table>
-  </v-container>
+              <v-btn
+                color="blue-darken-1"
+                variant="text"
+                @click="deleteItemConfirm"
+                >Eliminar</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+    <template v-slot:item.actions="{ item }">
+      <v-icon size="small" class="me-2" @click="editItem(item)"
+        >mdi-pencil</v-icon
+      >
+      <v-icon size="small" @click="deleteItem(item)">mdi-delete</v-icon>
+    </template>
+    <template v-slot:no-data>
+      <v-btn color="primary" @click="initialize">Reset</v-btn>
+    </template>
+  </v-data-table>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 import exportFromJSON from "export-from-json";
 
 export default {
   data: () => ({
-    filteredDesserts: [],
-    search: "",
-    showFilter: false,
+    editedItemLocal: {
+      ID: 0,
+      NOMBRE: "",
+      RUT: 0,
+      DIRECCION: "",
+      CONTACTO: "",
+      CORREO: "",
+      TELEFONO: 0,
+      COMENTARIOS: "",
+      ADJUNTO: null,
+
+      // ... otros campos
+    },
+    editedItemDefault: {
+      ID: 0,
+      NOMBRE: "",
+      RUT: 0,
+      DIRECCION: "",
+      CONTACTO: "",
+      CORREO: "",
+      TELEFONO: 0,
+      COMENTARIOS: "",
+      ADJUNTO: null,
+      // ... otros campos
+    },
     dialog: false,
     dialogDelete: false,
-    dialogView: false,
-
-    headers: [
-      {
-        title: "Nombre",
-        align: "start",
-        sortable: false,
-        key: "name",
-      },
-
-      { title: "Rut", key: "rut" },
-      { title: "Dirección", key: "direccion" },
-      { title: "Contacto", key: "contacto" },
-      { title: "Correo", key: "correo" },
-      { title: "Telefono", key: "telefono" },
-      { title: "Comentarios", key: "comentarios" },
-      { title: "Acción", key: "actions", sortable: false },
-      { title: "Adjunto", key: "archivoAdjunto", sortable: false },
-    ],
-    desserts: [],
     editedIndex: -1,
-    editedItem: {
-      name: "",
-      rut: 0,
-      direccion: "",
-      contacto: "",
-      correo: "",
-      telefono: 0,
-      comentarios: "",
-      archivoAdjunto: null,
-    },
-    defaultItem: {
-      name: "",
-      rut: 0,
-      direccion: "",
-      contacto: "",
-      correo: "",
-      telefono: 0,
-      comentarios: "",
-      archivoAdjunto: null,
-    },
+    filteredVentas: [],
+    search: "",
   }),
 
   computed: {
-    ...mapGetters("clientesModule", ["allClientes"]), // Mapea el getter desde el módulo 'clientesModule'
+    ...mapGetters("clientes", ["getClientes", "getClientesHeaders"]),
+    ...mapState("clientes", ["editedItem", "fields", "clientes", "clientesHeaders"]),
+    formTitle() {
+      return this.editedIndex === -1 ? "Nuevo Cliente" : "Editar cliente";
+    },
   },
 
   watch: {
@@ -226,79 +174,70 @@ export default {
       val || this.closeDelete();
     },
     search: function (newSearch) {
-      this.filteredDesserts = this.desserts.filter((item) => {
-        return item.name.toLowerCase().includes(newSearch.toLowerCase());
+      this.filteredClientes = this.clientes.filter((item) => {
+        return Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(newSearch.toLowerCase())
+        );
       });
     },
   },
 
-  created() {
-    this.initialize();
-  },
+  created() {},
 
   methods: {
-    ...mapActions("clientesModule", ["initialize"]), // Mapea la acción desde el módulo 'clientesModule'
-  },
+    ...mapActions("clientes", ["updateDessert", "createCliente", "deleteCliente"]),
 
-  editItem(item) {
-    this.editedIndex = this.desserts.indexOf(item);
-    this.editedItem = Object.assign({}, item);
-    this.dialog = true;
-  },
+    editItem(item) {
+      console.log("editando");
+      this.editedIndex = this.clientes.indexOf(item);
+      this.editedItemLocal = Object.assign({}, item);
+      this.dialog = true;
+    },
 
-  deleteItem(item) {
-    this.editedIndex = this.desserts.indexOf(item);
-    this.editedItem = Object.assign({}, item);
-    this.dialogDelete = true;
-  },
-  viewItem(item) {
-    this.editedIndex = this.desserts.indexOf(item);
-    this.editedItem = Object.assign({}, item);
-    this.dialogView = true;
-  },
+    deleteItem(item) {
+      this.editedIndex = this.clientes.indexOf(item);
+      this.editedItemLocal = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
 
-  deleteItemConfirm() {
-    this.desserts.splice(this.editedIndex, 1);
-    this.closeDelete();
-  },
+    deleteItemConfirm() {
+      this.$store.dispatch("clientes/deleteCliente", { index: this.editedIndex });
+      this.closeDelete();
+    },
 
-  close() {
-    this.dialog = false;
-    this.$nextTick(() => {
-      this.editedItem = Object.assign({}, this.defaultItem);
-      this.editedIndex = -1;
-    });
-  },
+    close() {
+      this.dialog = false;
+      this.editedItemLocal = this.editedItemDefault;
+    },
 
-  closeDelete() {
-    this.dialogDelete = false;
-    this.$nextTick(() => {
-      this.editedItem = Object.assign({}, this.defaultItem);
-      this.editedIndex = -1;
-    });
-  },
+    closeDelete() {
+      this.dialogDelete = false;
+    },
 
-  save() {
-    if (this.editedIndex > -1) {
-      Object.assign(this.desserts[this.editedIndex], this.editedItem);
-    } else {
-      this.desserts.push(this.editedItem);
-    }
-    this.close();
-    this.editedItem.archivoAdjunto = null;
-  },
-  descargarExcell() {
-    const data = this.showFilter ? this.filteredDesserts : this.desserts;
-    const fileName = "RegistroClientes";
-    const exportType = exportFromJSON.types.xls;
-    exportFromJSON({ data, fileName, exportType });
-  },
-  getAttachmentUrl(item) {
-    return URL.createObjectURL(item.archivoAdjunto);
-  },
+    save() {
+      this.dialog = false;
+      console.log("guardando");
+      if (this.editedIndex > -1) {
+        // Object.assign(this.bla[this.editedIndex], this.editedItem)
+        this.$store.dispatch("clientes/updateDessert", {
+          index: this.editedIndex,
+          item: this.editedItemLocal,
+        });
+        this.editedItemLocal = this.editedItemDefault;
+      } else {
+        this.$store.dispatch("clientes/createCliente", {
+          item: this.editedItemLocal,
+        });
+      }
+    },
 
-  closeView() {
-    this.dialogView = false;
+    descargarExcell() {
+      const data = this.showFilter ? this.filteredClientes : this.clientes;
+      const fileName = "RegistroClientes";
+      const exportType = exportFromJSON.types.xls;
+      exportFromJSON({ data, fileName, exportType });
+    },
   },
 };
 </script>
+

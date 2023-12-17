@@ -2,14 +2,16 @@
 
 import { createStore } from 'vuex';
 import polizas from './modules/polizas';
-import ventasModule from './modules/ventas';
-import clientesModule from './modules/clientes';
+import ventas from './modules/ventas';
+import clientes from './modules/clientes';
+import usuarios from './modules/usuarios';
 
 export default createStore({
   modules: {
     polizas,
-    ventasModule,
-    clientesModule
+    ventas,
+    clientes,
+    usuarios
 
   }
 });
