@@ -1,7 +1,7 @@
 <template>
   <v-data-table
-    :headers="usuariosHeaders"
-    :items="search ? filteredUsuarios : usuarios"
+    :headers="ventasHeaders"
+    :items="search ? filteredVentas : ventas"
     :sort-by="[{ key: 'ID', order: 'desc' }]"
   >
     <template v-slot:top>
@@ -9,7 +9,7 @@
         <v-toolbar-title
           >{{}}
           <v-row align="center">
-            <v-col cols="8" sm="6" md="8">
+            <v-col cols="8" sm="6" md="10">
               <v-text-field
                 v-model="search"
                 prepend-inner-icon="mdi-magnify"
@@ -42,7 +42,14 @@
               size="x-large"
               color="Black"
             ></v-btn>
-            
+            <v-btn
+              density="compact"
+              icon="mdi-filter"
+              size="x-large"
+              color="black"
+              @click="showFilterMenu = !showFilterMenu"
+            >
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -129,9 +136,11 @@ export default {
       POLIZA: 0,
       FACTURA: 0,
       GD: 0,
+      VENTA: new Date(),
       CLIENTE: "",
-      VEN_FUNDA: new Date(),
+      VEN_FUNDA: new Date(),  
       VEN_PANEL: new Date(),
+      VEN_POLIZA: new Date(),
       VENDEDOR: "",
       COMENTARIOS: "",
       ADJUNTO: null,
@@ -148,9 +157,11 @@ export default {
       POLIZA: 0,
       FACTURA: 0,
       GD: 0,
+      VENTA: new Date(),
       CLIENTE: "",
       VEN_FUNDA: new Date(),
       VEN_PANEL: new Date(),
+      VEN_POLIZA: new Date(),
       VENDEDOR: "",
       COMENTARIOS: "",
       ADJUNTO: null,
@@ -164,10 +175,10 @@ export default {
   }),
 
   computed: {
-    ...mapGetters("usuarios", ["getUsuarios", "getusuariosHeaders"]),
-    ...mapState("usuarios", ["editedItem", "fields", "usuarios", "usuariosHeaders"]),
+    ...mapGetters("ventas", ["getVentas", "getventasHeaders"]),
+    ...mapState("ventas", ["editedItem", "fields", "ventas", "ventasHeaders"]),
     formTitle() {
-      return this.editedIndex === -1 ? "Nueva Usuarios" : "Editar Usuarios";
+      return this.editedIndex === -1 ? "Nueva Venta" : "Editar Venta";
     },
   },
 
@@ -179,7 +190,7 @@ export default {
       val || this.closeDelete();
     },
     search: function (newSearch) {
-      this.filteredUsuarios = this.usuarios.filter((item) => {
+      this.filteredVentas = this.ventas.filter((item) => {
         return Object.values(item).some((value) =>
           String(value).toLowerCase().includes(newSearch.toLowerCase())
         );
@@ -190,23 +201,23 @@ export default {
   created() {},
 
   methods: {
-    ...mapActions("usuarios", ["updateDessert", "createUsuario", "deleteUsuario"]),
+    ...mapActions("ventas", ["updateDessert", "createVenta", "deleteVenta"]),
 
     editItem(item) {
       console.log("editando");
-      this.editedIndex = this.usuarios.indexOf(item);
+      this.editedIndex = this.ventas.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.usuarios.indexOf(item);
+      this.editedIndex = this.ventas.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("usuarios/deleteUsuario", { index: this.editedIndex });
+      this.$store.dispatch("ventas/deleteVenta", { index: this.editedIndex });
       this.closeDelete();
     },
 
@@ -224,21 +235,21 @@ export default {
       console.log("guardando");
       if (this.editedIndex > -1) {
         // Object.assign(this.bla[this.editedIndex], this.editedItem)
-        this.$store.dispatch("usuarios/updateDessert", {
+        this.$store.dispatch("ventas/updateDessert", {
           index: this.editedIndex,
           item: this.editedItemLocal,
         });
         this.editedItemLocal = this.editedItemDefault;
       } else {
-        this.$store.dispatch("usuarios/createUsuario", {
+        this.$store.dispatch("ventas/createVenta", {
           item: this.editedItemLocal,
         });
       }
     },
 
     descargarExcell() {
-      const data = this.showFilter ? this.filteredUsuarios : this.usuarios;
-      const fileName = "RegistroUsuarios";
+      const data = this.showFilter ? this.filteredVentas : this.ventas;
+      const fileName = "RegistroVentas";
       const exportType = exportFromJSON.types.xls;
       exportFromJSON({ data, fileName, exportType });
     },

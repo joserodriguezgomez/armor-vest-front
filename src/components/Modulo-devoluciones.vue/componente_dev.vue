@@ -1,8 +1,13 @@
 <template>
-  <v-data-table :headers="chalecoHeaders"  :items="search ? filteredChalecos : chalecos">
+  <v-data-table
+    :headers="devolucionesHeaders"
+    :items="search ? filteredDevoluciones : devoluciones"
+    :sort-by="[{ key: 'ID', order: 'desc' }]"
+  >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>{{}}
+        <v-toolbar-title
+          >{{}}
           <v-row align="center">
             <v-col cols="8" sm="6" md="10">
               <v-text-field
@@ -14,15 +19,16 @@
                 flat
                 hide-details
                 variant="solo-filled"
-              ></v-text-field>  
+              ></v-text-field>
             </v-col>
           </v-row>
         </v-toolbar-title>
+
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ props }">
-             <v-btn
+            <v-btn
               density="compact"
               icon="mdi-plus"
               v-bind="props"
@@ -53,8 +59,17 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col v-for="field in fields" :key="field.model" cols="12" sm="6" md="4">
-                    <v-text-field :label="field.label" v-model="editedItemLocal[field.model]"></v-text-field>
+                  <v-col
+                    v-for="field in fields"
+                    :key="field.model"
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-text-field
+                      :label="field.label"
+                      v-model="editedItemLocal[field.model]"
+                    ></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -62,18 +77,32 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="close">Cancelar</v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="save">Guardar</v-btn>
+
+              <v-btn color="blue-darken-1" variant="text" @click="close"
+                >Cancelar</v-btn
+              >
+              <v-btn color="blue-darken-1" variant="text" @click="save"
+                >Guardar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">¿Esta seguro de eliminar este registro?</v-card-title>
+            <v-card-title class="text-h5"
+              >¿Esta seguro de eliminar este registro?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancelar</v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">Eliminar</v-btn>
+              <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
+                >Cancelar</v-btn
+              >
+              <v-btn
+                color="blue-darken-1"
+                variant="text"
+                @click="deleteItemConfirm"
+                >Eliminar</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -81,7 +110,9 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon size="small" class="me-2" @click="editItem(item)">mdi-pencil</v-icon>
+      <v-icon size="small" class="me-2" @click="editItem(item)"
+        >mdi-pencil</v-icon
+      >
       <v-icon size="small" @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
     <template v-slot:no-data>
@@ -90,51 +121,61 @@
   </v-data-table>
 </template>
 <script>
-
-
 import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 import exportFromJSON from "export-from-json";
 
 export default {
   data: () => ({
     editedItemLocal: {
-      ID_CHALECO: "",
-      ID_POLIZA: "",
+      ID: "",
+      LOTE: "",
+      SERIE: "",
+      TALLA: 0,
       MODELO: "",
-      TALLA: "",
-      VENCIMIENTO_FUNDA: "",
-      VENCIMIENTO_PANEL: "",
-      CLIENTE : ""
+      IDIC: "",
+      POLIZA: 0,
+      FACTURA: 0,
+      GD: 0,
+      CLIENTE: "",
+      VEN_FUNDA: new Date(),
+      VEN_PANEL: new Date(),
+      VENDEDOR: "",
+      COMENTARIOS: "",
+      ADJUNTO: null,
+
       // ... otros campos
     },
     editedItemDefault: {
-      ID_CHALECO: "",
-      ID_POLIZA: "",
+      ID: "",
+      LOTE: "",
+      SERIE: "",
+      TALLA: 0,
       MODELO: "",
-      TALLA: "",
-      VENCIMIENTO_FUNDA: "",
-      VENCIMIENTO_PANEL: "",
-      CLIENTE : ""
+      IDIC: "",
+      POLIZA: 0,
+      FACTURA: 0,
+      GD: 0,
+      CLIENTE: "",
+      VEN_FUNDA: new Date(),
+      VEN_PANEL: new Date(),
+      VENDEDOR: "",
+      COMENTARIOS: "",
+      ADJUNTO: null,
       // ... otros campos
     },
-    search: "",
-    filteredVentas: [],
     dialog: false,
     dialogDelete: false,
-    editedIndex: -1
+    editedIndex: -1,
+    filteredDevoluciones: [],
+    search: "",
   }),
 
   computed: {
-    ...mapGetters("chalecos", ["getChalecos", "getchalecosHeaders"]),
-    ...mapState("chalecos", [
-      "editedItem",
-      "fields",
-      "chalecos",
-      "chalecoHeaders"
-    ]),
+    ...mapGetters("devoluciones", ["getDevoluciones", "getDevolucionesHeaders"]),
+    ...mapState("devoluciones", ["editedItem", "fields", "devoluciones", "devolucionesHeaders"]),
     formTitle() {
-      return this.editedIndex === -1 ? "Nuev chaleco" : "Editar chaleco";
-    }
+      return this.editedIndex === -1 ? "Nueva Devolucion" : "Editar Devolucion";
+    },
   },
 
   watch: {
@@ -145,7 +186,7 @@ export default {
       val || this.closeDelete();
     },
     search: function (newSearch) {
-      this.filteredChalecos = this.chalecos.filter((item) => {
+      this.filteredDevoluciones = this.devoluciones.filter((item) => {
         return Object.values(item).some((value) =>
           String(value).toLowerCase().includes(newSearch.toLowerCase())
         );
@@ -156,23 +197,23 @@ export default {
   created() {},
 
   methods: {
-    ...mapMutations("chalecos", ["updateField"]),
-    ...mapActions("chalecos", ["updateChaleco", "createChaleco", "deleteChaleco"]),
+    ...mapActions("devoluciones", ["updateDessert", "createDevolucion", "deleteDevolucion"]),
 
     editItem(item) {
-      this.editedIndex = this.chalecos.indexOf(item);
+      console.log("editando");
+      this.editedIndex = this.devoluciones.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.chalecos.indexOf(item);
+      this.editedIndex = this.devoluciones.indexOf(item);
       this.editedItemLocal = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("chalecos/deleteChaleco", { index: this.editedIndex });
+      this.$store.dispatch("devoluciones/deleteDevolucion", { index: this.editedIndex });
       this.closeDelete();
     },
 
@@ -187,26 +228,27 @@ export default {
 
     save() {
       this.dialog = false;
+      console.log("guardando");
       if (this.editedIndex > -1) {
         // Object.assign(this.bla[this.editedIndex], this.editedItem)
-        this.$store.dispatch("chalecos/updateChaleco", {
+        this.$store.dispatch("devoluciones/updateDessert", {
           index: this.editedIndex,
-          item: this.editedItemLocal
+          item: this.editedItemLocal,
         });
         this.editedItemLocal = this.editedItemDefault;
       } else {
-        this.$store.dispatch("chalecos/createChaleco", {
-          item: this.editedItemLocal
+        this.$store.dispatch("devoluciones/createDevolucion", {
+          item: this.editedItemLocal,
         });
       }
     },
 
     descargarExcell() {
-      const data = this.showFilter ? this.filteredChalecos : this.chalecos;
-      const fileName = "RegistroChalecos";
+      const data = this.showFilter ? this.filteredDevoluciones : this.devoluciones;
+      const fileName = "RegistroDevoluciones";
       const exportType = exportFromJSON.types.xls;
       exportFromJSON({ data, fileName, exportType });
     },
-  }
+  },
 };
 </script>

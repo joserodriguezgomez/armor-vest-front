@@ -9,16 +9,22 @@
         <v-toolbar-title
           >{{}}
           <v-row align="center">
-            <v-col cols="8" sm="6" md="8">
+            <v-col
+              v-for="field in clientesHeaders"
+              :key="field.key"
+              cols="12"
+              sm="6"
+              md="3"
+            >
               <v-text-field
-                v-model="search"
-                prepend-inner-icon="mdi-magnify"
-                density="compact"
-                label="Search"
-                single-line
-                flat
+                v-if="field.key !== 'actions'"
+                :label="field.label"
+                v-model="field.search"
+                @input="applyFilter"
+                dense
                 hide-details
-                variant="solo-filled"
+                outlined
+                solo-inverted
               ></v-text-field>
             </v-col>
           </v-row>
@@ -42,14 +48,54 @@
               size="x-large"
               color="Black"
             ></v-btn>
-            <v-btn
-              density="compact"
-              icon="mdi-filter"
-              size="x-large"
-              color="black"
-              @click="showFilterMenu = !showFilterMenu"
-            >
-            </v-btn>
+
+            <v-btn-group>
+              <v-combobox
+                chips
+                v-model="selectedField"
+                :items="clientesHeaders"
+                item-text="title"
+                item-value="key"
+                dense
+                hide-details
+                outlined
+                multiple
+                label="Filtrar por"
+                @change="applyFilter"
+                max-height="350"
+                style="width: 350 px"
+              >
+                <template v-slot:prepend-inner-icon> </template>
+              </v-combobox>
+
+              <v-menu v-model="showFilterMenu" offset-y>
+                <v-list>
+                  <v-list-item
+                    v-for="field in clientesHeaders"
+                    :key="field.key"
+                  >
+                    <v-list-item-content>
+                      <v-list-item-title @click="applyFilter(field.key)">
+                        {{ field.title }}
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+
+                  <v-list-item v-for="cliente in clientes" :key="cliente.ID">
+                    <v-list-item-content>
+                      <v-row align="center">
+                        <v-col>
+                          <v-btn @click="applyFilter(cliente)"
+                            >Seleccionar</v-btn
+                          >
+                        </v-col>
+                        <v-col>{{ cliente.NOMBRE }}</v-col>
+                      </v-row>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-btn-group>
           </template>
           <v-card>
             <v-card-title>
@@ -120,6 +166,8 @@
     </template>
   </v-data-table>
 </template>
+
+
 <script>
 import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 import exportFromJSON from "export-from-json";
@@ -156,11 +204,25 @@ export default {
     editedIndex: -1,
     filteredVentas: [],
     search: "",
+    showFilterMenu: false,
+    selectedField: [],
+    filteredClientes: [],
+    filterValues: {},
+    clientesHeaders: [
+      { text: 'ID', value: 'ID', search: '' },
+      { text: 'Nombre', value: 'NOMBRE', search: '' },
+      // Agrega más columnas según tus necesidades
+    ],
   }),
 
   computed: {
     ...mapGetters("clientes", ["getClientes", "getClientesHeaders"]),
-    ...mapState("clientes", ["editedItem", "fields", "clientes", "clientesHeaders"]),
+    ...mapState("clientes", [
+      "editedItem",
+      "fields",
+      "clientes",
+      "clientesHeaders",
+    ]),
     formTitle() {
       return this.editedIndex === -1 ? "Nuevo Cliente" : "Editar cliente";
     },
@@ -173,19 +235,32 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-    search: function (newSearch) {
-      this.filteredClientes = this.clientes.filter((item) => {
-        return Object.values(item).some((value) =>
-          String(value).toLowerCase().includes(newSearch.toLowerCase())
-        );
-      });
-    },
+    clientesHeaders: {
+      deep: true,
+      handler(newVal) {
+        // Filtrar clientes según las nuevas configuraciones de búsqueda
+        const filterOptions = newVal.reduce((acc, header) => {
+          acc[header.value] = header.search.toLowerCase();
+          return acc;
+        }, {});
+       this.filteredClientes = this.clientes.filter((item) => {
+          return Object.entries(filterOptions).every(([key, value]) => {
+            return String(item[key]).toLowerCase().includes(value);
+          });
+        });
+      },
+    
+      },
   },
 
   created() {},
 
   methods: {
-    ...mapActions("clientes", ["updateDessert", "createCliente", "deleteCliente"]),
+    ...mapActions("clientes", [
+      "updateDessert",
+      "createCliente",
+      "deleteCliente",
+    ]),
 
     editItem(item) {
       console.log("editando");
@@ -201,7 +276,9 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("clientes/deleteCliente", { index: this.editedIndex });
+      this.$store.dispatch("clientes/deleteCliente", {
+        index: this.editedIndex,
+      });
       this.closeDelete();
     },
 
@@ -236,6 +313,22 @@ export default {
       const fileName = "RegistroClientes";
       const exportType = exportFromJSON.types.xls;
       exportFromJSON({ data, fileName, exportType });
+    },
+    applyFilter(fieldKey) {
+      this.showFilterMenu = false;
+
+      // Filtra los clientes según los valores de filtro
+      this.filteredClientes = this.clientes.filter((cliente) => {
+        return Object.keys(this.filterValues).every((key) => {
+          const filterValue = this.filterValues[key];
+          return (
+            !filterValue ||
+            String(cliente[key])
+              .toLowerCase()
+              .includes(filterValue.toLowerCase())
+          );
+        });
+      });
     },
   },
 };

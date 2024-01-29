@@ -17,14 +17,12 @@ export default {
         // ... otros campos
       ],
       usuarios:[
-        { ID: 1, NOMBRE: 'ARM 01 24', CORREO: 1, PERFIL: 'S' },
-        { ID: 1, NOMBRE: 'ARM 01 24', CORREO: 1, PERFIL: 'S' },
-        { ID: 1, NOMBRE: 'ARM 01 24', CORREO: 1, PERFIL: 'S' },
-        { ID: 1, NOMBRE: 'ARM 01 24', CORREO: 1, PERFIL: 'S' },
-        { ID: 1, NOMBRE: 'ARM 01 24', CORREO: 1, PERFIL: 'S' },
-        { ID: 1, NOMBRE: 'ARM 01 24', CORREO: 1, PERFIL: 'S' },
-        
-        ],
+        { ID: 1, NOMBRE: 'Andres Aguayo', CORREO: 'andres@aguayo.legal', PERFIL: 'Administrador' },
+        { ID: 2, NOMBRE: 'Valentina Mejias', CORREO: 'valentina.mejias@armorvest.cl', PERFIL: 'Operario' },
+        { ID: 3, NOMBRE: 'Mileidys Sotolongo', CORREO: 'mily.sotolongo@armorvest.cl', PERFIL: 'Vendedor' },
+        { ID: 4, NOMBRE: 'Claudio Miranda', CORREO: 'claudio.miranda@armorvest.cl', PERFIL: 'Operario' },
+        { ID: 5, NOMBRE: 'Mario Sanhueza', CORREO: 'mario.sanhueza@armorvest.cl', PERFIL: 'Administrador' },
+      ],
       usuariosHeaders:[
         { title: "ID USUARIO", key: "ID" },
         { title: "NOMBRE", key: "NOMBRE" },
