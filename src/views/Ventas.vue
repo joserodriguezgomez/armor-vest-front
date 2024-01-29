@@ -14,6 +14,7 @@
         <v-col cols="1" offset="12">
           <btn_registrar />
         </v-col>
+      
       </v-row>
       <tabla />
 
@@ -30,6 +31,11 @@ import Filtrar from "@/components/Modulo-ventas/Filtrar.vue";
 import Buscador from "@/components/Modulo-ventas/Buscador.vue";
 import Paginacion from "@/components/Modulo-ventas/Paginacion.vue";
 import Formulario from "@/components/Modulo-ventas/Formulario.vue";
+import { ref } from 'vue';
+
+const tab = ref(null);
+
+
 </script>
 
 

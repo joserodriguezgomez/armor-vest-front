@@ -1,18 +1,54 @@
 <template>
   <v-data-table 
     :headers="polizaHeaders" 
-    :items="polizas" 
+    :items="search ? filteredPolizas : polizas"
     :sort-by="[{ key: 'ID', order: 'desc' }]"
     @click:row="handleRowClick"
     >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>{{}}</v-toolbar-title>
+        <v-toolbar-title>{{}}
+          <v-row align="center">
+            <v-col cols="8" sm="6" md="12">
+              <v-text-field
+                v-model="search"
+                prepend-inner-icon="mdi-magnify"
+                density="compact"
+                label="Search"
+                single-line
+                flat
+                hide-details
+                variant="solo-filled"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ props }">
-           <v-btn density="compact" icon="mdi-plus" v-bind="props" size="x-large" color="blue"></v-btn>
+            <v-btn
+              density="compact"
+              icon="mdi-plus"
+              v-bind="props"
+              size="x-large"
+              color="black"
+            ></v-btn>
+            <v-btn
+              density="compact"
+              icon="mdi-download"
+              @click="descargarExcell()"
+              size="x-large"
+              color="Black"
+            ></v-btn>
+            <v-btn
+              density="compact"
+              icon="mdi-filter"
+              size="x-large"
+              color="black"
+              @click="showFilterMenu = !showFilterMenu"
+            >
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -81,9 +117,11 @@ export default {
       POLIZA: "",
       // ... otros campos
     },
+    search: "",
     dialog: false,
     dialogDelete: false,
     editedIndex: -1
+    
   }),
 
   computed: {
@@ -106,14 +144,25 @@ export default {
     },
     dialogDelete(val) {
       val || this.closeDelete();
-    }
+    },
+    search: function (newSearch) {
+      this.filteredPolizas = this.polizas.filter((item) => {
+        return Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(newSearch.toLowerCase())
+        );
+      });
+    },
+  },
+
+  mounted(){
+    this.$store.dispatch("polizas/leerIdics")
   },
 
   created() {},
 
   methods: {
-    ...mapMutations("polizas", ["updateField"]),
-    ...mapActions("polizas", ["updateDessert", "createPoliza", "deletePoliza"]),
+    ...mapMutations("polizas", ["updateField", "SET_IDICS"]),
+    ...mapActions("polizas", ["updateDessert", "createPoliza", "deletePoliza", "leerIdics"]),
 
     handleRowClick(event, item) {
       this.$emit('selected-poliza', item.item);
@@ -161,6 +210,7 @@ export default {
         });
       }
     }
+    
   }
 };
 </script>

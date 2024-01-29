@@ -9,7 +9,7 @@
         <v-toolbar-title
           >{{}}
           <v-row align="center">
-            <v-col cols="8" sm="6" md="8">
+            <v-col cols="8" sm="6" md="10">
               <v-text-field
                 v-model="search"
                 prepend-inner-icon="mdi-magnify"
@@ -136,9 +136,11 @@ export default {
       POLIZA: 0,
       FACTURA: 0,
       GD: 0,
+      VENTA: new Date(),
       CLIENTE: "",
-      VEN_FUNDA: new Date(),
+      VEN_FUNDA: new Date(),  
       VEN_PANEL: new Date(),
+      VEN_POLIZA: new Date(),
       VENDEDOR: "",
       COMENTARIOS: "",
       ADJUNTO: null,
@@ -155,9 +157,11 @@ export default {
       POLIZA: 0,
       FACTURA: 0,
       GD: 0,
+      VENTA: new Date(),
       CLIENTE: "",
       VEN_FUNDA: new Date(),
       VEN_PANEL: new Date(),
+      VEN_POLIZA: new Date(),
       VENDEDOR: "",
       COMENTARIOS: "",
       ADJUNTO: null,

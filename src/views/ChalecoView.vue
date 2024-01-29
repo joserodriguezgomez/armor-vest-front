@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <chalecoTable  />
+             <chalecoTable @selected-chaleco="selectRow" />
       </v-col>
 
     </v-row>
@@ -13,7 +13,7 @@
 
 <script>
 import chalecoTable from "@/components/Modulo-chalecos/ChalecoTabla.vue"
-
+ 
 
 
 export default {
