@@ -1,19 +1,26 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="7">
+      <!-- Ajuste en el tamaño de las columnas para alinear cargaMasiva a la derecha -->
+      <v-col cols="12" md="7">
         <polizaTable @selected-poliza="selectRow" />
       </v-col>
-      <v-col cols="5">
-         <ChalecosDetail :product="selectedChalecos" />
+      <v-col cols="12" md="5">
+        <cargaMasiva />
       </v-col>
+      <!-- Comentario temporal para ChalecosDetail, ajusta las columnas según necesites reactivarlo -->
+      <!-- <v-col cols="12" md="5">
+         <ChalecosDetail :product="selectedChalecos" />
+      </v-col> -->
     </v-row>
   </v-container>
 </template>
 
 
 
+
 <script>
+import cargaMasiva from '@/components/Modulo-polizas/CargaMasiva.vue';
 import ChalecosDetail from '@/components/Modulo-polizas/DetailChalecos.vue';
 function buscarChalecosPorPoliza(chalecos,polizaId) {
   // Primero, encuentra la póliza que coincide con el ID y la serie proporcionados
@@ -44,7 +51,8 @@ export default {
   },
   components: {
     polizaTable,
-    ChalecosDetail
+    ChalecosDetail,
+    cargaMasiva
   },
   name: 'ListaProductos',
   computed: {

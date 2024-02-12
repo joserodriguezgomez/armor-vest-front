@@ -95,12 +95,12 @@
             value="clientes"
             to="/clientes"
           ></v-list-item>
-          <v-list-item
+          <!-- <v-list-item
             prepend-icon="mdi-account-group"
             title="Usuarios"
             value="usuarios"
             to="/usuarios"
-          ></v-list-item>
+          ></v-list-item> -->
         </v-list>
       </v-navigation-drawer>
 

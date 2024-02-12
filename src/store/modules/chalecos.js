@@ -1,62 +1,35 @@
+import axios from "axios";
+
+
 export default {
   namespaced: true,
   state: {
 
     fields: [
-      { label: 'ID CHALECO', model: 'ID_CHALECO' },
-      { label: 'ID POLIZA', model: 'ID_POLIZA' },
-      { label: 'MODELO', model: 'MODELO' },
-      { label: 'VENCIMIENTO FUNDA', model: 'VENCIMIENTO_FUNDA' },
-      { label: 'VENCIMIENTO PANEL', model: 'VENCIMIENTO_PANEL' },
-      { label: 'CLIENTE', model: 'CLIENTE' },
+      // { label: 'ID CHALECO', model: 'ID_CHALECO' },
+      // { label: 'ID POLIZA', model: 'ID_POLIZA' },
+      { label: 'MODELO', model: 'modelo' },
+      { label: 'ESTADO', model: 'status' },
+      { label: 'TALLA', model: 'talla' },
+      // { label: 'CLIENTE', model: 'CLIENTE' },
       // ... otros campos
     ],
-    chalecos:[
-      { ID_CHALECO: '1', ID_POLIZA: '1', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Municipalidad de La Cisterna"},
-      { ID_CHALECO: '2', ID_POLIZA: '2', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Municipalidad de La Cisterna"},
-      { ID_CHALECO: '3', ID_POLIZA: '3', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Municipalidad de La Cisterna"},
-      { ID_CHALECO: '4', ID_POLIZA: '4', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Muestra Municipalidad Casa Blanca"},
-      { ID_CHALECO: '5', ID_POLIZA: '5', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Cambio a M Capual"},
-      { ID_CHALECO: '6', ID_POLIZA: '6', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Municipalidad de Melipilla"},
-      { ID_CHALECO: '7', ID_POLIZA: '7', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Municipalidad de La Cisterna"},
-      { ID_CHALECO: '8', ID_POLIZA: '8', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Municipalidad de La Cisterna"},
-      { ID_CHALECO: '9', ID_POLIZA: '9', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Municipalidad de La Cisterna"},
-      { ID_CHALECO: '10', ID_POLIZA: '10', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Fibra Studio"},
-      { ID_CHALECO: '11', ID_POLIZA: '11', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023'},
-      { ID_CHALECO: '12', ID_POLIZA: '12', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Municipalidad de La Cisterna"},
-      { ID_CHALECO: '13', ID_POLIZA: '13', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Municipalidad de La Cisterna"},
-      { ID_CHALECO: '14', ID_POLIZA: '14', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Fibra Studio"},
-      { ID_CHALECO: '15', ID_POLIZA: '15', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Fibra Studio"},
-      { ID_CHALECO: '16', ID_POLIZA: '16', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Banco de Chile"},
-
-      { ID_CHALECO: '17', ID_POLIZA: '1', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Casablanca"},
-      { ID_CHALECO: '18', ID_POLIZA: '2', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Casablanca"},
-      { ID_CHALECO: '19', ID_POLIZA: '3', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Casablanca"},
-      { ID_CHALECO: '20', ID_POLIZA: '4', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Banco Ripley"},
-      { ID_CHALECO: '21', ID_POLIZA: '5', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Casablanca"},
-      { ID_CHALECO: '22', ID_POLIZA: '6', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Casablanca"},
-      { ID_CHALECO: '23', ID_POLIZA: '7', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Banco Ripley"},
-      { ID_CHALECO: '24', ID_POLIZA: '8', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Banco Ripley"},
-      { ID_CHALECO: '25', ID_POLIZA: '9', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Banco Ripley"},
-      { ID_CHALECO: '26', ID_POLIZA: '12', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"EFE VALPO"},
-
-      { ID_CHALECO: '27', ID_POLIZA: '16', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"Pro Defense"},
-      { ID_CHALECO: '28', ID_POLIZA: '16', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"SEGES"},
-      { ID_CHALECO: '29', ID_POLIZA: '16', MODELO: "A", TALLA: 'S', VENCIMIENTO_FUNDA: '01-10-2023', VENCIMIENTO_PANEL: '01-11-2023',CLIENTE:"EFE VALPO"},
-
-    ],
+    chalecos:[],
     chalecoHeaders:[
-      { title: 'ID CHALECO', key: 'ID_CHALECO' },
-      { title: 'ID POLIZA', key: 'ID_POLIZA' },
-      { title: 'MODELO', key: 'MODELO' },
-      { title: 'VENCIMIENTO FUNDA', key: 'VENCIMIENTO_FUNDA' },
-      { title: 'VENCINIENTO PANEL', key: 'VENCIMIENTO_PANEL' },
-      { title: 'CLIENTE', key: 'CLIENTE' },
+      { title: 'ID CHALECO', key: 'id_chaleco' },
+      { title: 'ID IDIC', key: 'id_idic' },
+      { title: 'MODELO', key: 'modelo' },
+      { title: 'ESTADO', key: 'status' },
+      { title: 'TALLA', key: 'talla' },
+      // { title: 'CLIENTE', key: 'CLIENTE' },
       { title: 'Actions', key: 'actions', sortable: false }
       
     ]
   },
   mutations:{
+    SET_CHALECOS(state, data){
+      state.chalecos=data
+    },
     UPDATE_CHALECO(state, { index, item }) {
       // Actualiza un elemento específico en el array de polizas
       state.chalecos[index] = item;
@@ -71,14 +44,31 @@ export default {
     }
   },
   actions: {
-    updateChaleco({ commit }, payload) {
-      commit('UPDATE_CHALECO', payload);
+    async leerChalecos({ commit }){
+      const url = "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/chalecos";
+      const response = await axios.get(url);
+      // const idicsFormateados = response.data.map(idic => ({
+      //   ...idic,
+      //   fecha_poliza: formatearFecha(idic.fecha_poliza),
+      //   fecha_poliza_vencimiento: formatearFecha(idic.fecha_poliza_vencimiento)
+      // }));
+      commit("SET_CHALECOS", response.data);
     },
-    createChaleco({ commit }, payload) {
-      commit('CREATE_CHALECO', payload);
+    async updateChaleco({ dispatch }, payload) {
+      const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/chalecos/${payload.item._id}`;
+      await axios.put(url, payload.item); // El segundo argumento es el cuerpo de la solicitud
+      dispatch('leerChalecos');
+      // commit('UPDATE_DESSERT', payload.index,response.data);
     },
-    deleteChaleco({ commit }, payload) {
-      commit('DELETE_CHALECO', payload);
+    async createChaleco({ dispatch }, payload) {
+      const url= "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/chalecos"
+      await axios.post(url, payload.item);
+      dispatch('leerChalecos');
+    },
+    async deleteChaleco({ dispatch }, payload) {
+      const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/chalecos/${payload.item._id}`;
+      await axios.delete(url);
+      dispatch('leerChalecos');
     },
   }
   

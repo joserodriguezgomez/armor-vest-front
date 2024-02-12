@@ -49,6 +49,11 @@
               @click="showFilterMenu = !showFilterMenu"
             >
             </v-btn>
+
+
+
+
+
           </template>
           <v-card>
             <v-card-title>
@@ -96,25 +101,29 @@
 </template>
 <script>
 import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
-
+import cargaMasiva from '@/components/Modulo-polizas/CargaMasiva.vue';
 export default {
   data: () => ({
     editedItemLocal: {
-      ID: "local",
-      LOTE: "",
-      SERIE: "",
-      TALLA: 0,
-      IDIC: "",
-      POLIZA: ""
+      id_idic: 1,
+      lote: "",
+      serie: "",
+      talla: 0,
+      idic: "",
+      poliza_nombre: "",
+      fecha_poliza: null,
+      fecha_poliza_vencimiento:null
       // ... otros campos
     },
     editedItemDefault: {
-      ID: "",
-      LOTE: "",
-      SERIE: "",
-      TALLA: "",
-      IDIC: "",
-      POLIZA: "",
+      id_idic: 1,
+      lote: "",
+      serie: "",
+      talla: 0,
+      idic: "",
+      poliza_nombre: "",
+      fecha_poliza: null,
+      fecha_poliza_vencimiento: null
       // ... otros campos
     },
     search: "",
@@ -123,7 +132,9 @@ export default {
     editedIndex: -1
     
   }),
-
+  components:{
+    cargaMasiva
+  },
   computed: {
     ...mapGetters("polizas", ["getPolizas", "getPolizaHeaders"]),
     ...mapState("polizas", [
@@ -181,7 +192,7 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("polizas/deletePoliza", { index: this.editedIndex });
+      this.$store.dispatch("polizas/deletePoliza", { item: this.editedItemLocal });
       this.closeDelete();
     },
 
@@ -208,6 +219,7 @@ export default {
         this.$store.dispatch("polizas/createPoliza", {
           item: this.editedItemLocal
         });
+        this.editedItemLocal = this.editedItemDefault;
       }
     }
     
