@@ -11,6 +11,7 @@ export default {
       { label: 'MODELO', model: 'modelo' },
       { label: 'ESTADO', model: 'status' },
       { label: 'TALLA', model: 'talla' },
+      { label: 'ID IDIC', model: 'id_idic' },
       // { label: 'CLIENTE', model: 'CLIENTE' },
       // ... otros campos
     ],

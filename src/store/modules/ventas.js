@@ -56,6 +56,7 @@ export default {
         const response = await axios.get(url);
         console.log(response.data)
         const idicsFormateados = response.data.map(idic => ({
+          
           ...idic,
           fecha_poliza: formatearFecha(idic.fecha_poliza),
           fecha_poliza_vencimiento: formatearFecha(idic.fecha_poliza_vencimiento),
@@ -85,6 +86,7 @@ export default {
         const url= "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/ventas"
         // payload.item.fecha_poliza = convertirDDMMYYYYaISO(payload.item.fecha_poliza);
         // payload.item.fecha_venta = convertirDDMMYYYYaISO(payload.item.fecha_venta);
+        console.log(payload.item)
         await axios.post(url, payload.item);
         dispatch('leerVentas');
       },
