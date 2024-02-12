@@ -41,7 +41,7 @@ import ventas from "@/views/Ventas.vue";
 import muestras from "@/views/muestras.vue";
 import devoluciones from "@/views/devoluciones.vue";
 // import Componente1_cliente from "@/views/Clientes.vue";
-import chalecoView from "@/views/chalecoView";
+import chalecoView from "@/views/ChalecoView";
 
 export default {
   data() {
