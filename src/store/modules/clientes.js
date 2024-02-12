@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default {
     namespaced: true,
     state: {
@@ -14,38 +16,27 @@ export default {
         // ... otros campos
       },
       fields: [
-        { label: 'ID', model: 'ID' },
-        { label: 'NOMBRE', model: 'NOMBRE' },
-        { label: 'RUT', model: 'RUT' },
-        { label: 'DIRECCION', model: 'DIRECCION' },
-        { label: 'CONTACTO', model: 'CONTACTO' },
-        { label: 'CORREO', model: 'CORREO' },
-        { label: 'TELEFONO', model: 'TELEFONO' },
-        { label: 'COMENTARIOS', model: 'COMENTARIOS' },
-        { label: 'ADJUTNO', model: 'ADJUNTO' },
-        // ... otros campos
+        { label: 'NOMBRE', model: 'nombre' },
+        { label: 'FECHA CREACIÓN', model: 'fecha_creacion' },
+        { label: 'DIRECCIÓN ', model: 'direccion' },
+        { label: 'CORREO', model: 'correo' },
+        { label: 'CONTACTO', model: 'telefono' },
+        { label: 'COMENTARIOS', model: 'comentarios' },
+        // { label: 'TELEFONO', model: 'TELEFONO' },
+        // { label: 'COMENTARIOS', model: 'COMENTARIOS' },
+        // { label: 'ADJUTNO', model: 'ADJUNTO' },
+        // // ... otros campos
       ],
-      clientes:[
-        { ID: 1, NOMBRE: 'Municipalidad la Cisterna', RUT: '99.999.999-9', DIRECCION: 'Av Providencia 2250', CONTACTO: 'Juan Perez', CORREO: 'juan.perez@gmail.com', TELEFONO: 569223344556, COMENTARIOS: '', ADJUNTO: 0 },
-        { ID: 2, NOMBRE: 'Municipalidad Casa Blanca', RUT: '99.999.999-9', DIRECCION: 'Av Providencia 2250', CONTACTO: 'Juan Perez', CORREO: 'juan.perez@gmail.com', TELEFONO: 569223344556, COMENTARIOS: '', ADJUNTO: 0 },
-        { ID: 3, NOMBRE: 'Banco de Chile', RUT: '99.999.999-9', DIRECCION: 'Av Providencia 2250', CONTACTO: 'Juan Perez', CORREO: 'juan.perez@gmail.com', TELEFONO: 569223344556, COMENTARIOS: '', ADJUNTO: 0 },
-        { ID: 4, NOMBRE: 'Fibra Studio', RUT: '99.999.999-9', DIRECCION: 'Av Providencia 2250', CONTACTO: 'Juan Perez', CORREO: 'juan.perez@gmail.com', TELEFONO: 569223344556, COMENTARIOS: '', ADJUNTO: 0 },
-        { ID: 5, NOMBRE: 'Cambio a M Capual', RUT: '99.999.999-9', DIRECCION: 'Av Providencia 2250', CONTACTO: 'Juan Perez', CORREO: 'juan.perez@gmail.com', TELEFONO: 569223344556, COMENTARIOS: '', ADJUNTO: 0 },
-        { ID: 6, NOMBRE: 'Banco Ripley', RUT: '99.999.999-9', DIRECCION: 'Av Providencia 2250', CONTACTO: 'Juan Perez', CORREO: 'juan.perez@gmail.com', TELEFONO: 569223344556, COMENTARIOS: '', ADJUNTO: 0 },
-        { ID: 7, NOMBRE: 'Pro Defense', RUT: '99.999.999-9', DIRECCION: 'Av Providencia 2250', CONTACTO: 'Juan Perez', CORREO: 'juan.perez@gmail.com', TELEFONO: 569223344556, COMENTARIOS: '', ADJUNTO: 0 },
-        { ID: 8, NOMBRE: 'SEGES', RUT: '99.999.999-9', DIRECCION: 'Av Providencia 2250', CONTACTO: 'Juan Perez', CORREO: 'juan.perez@gmail.com', TELEFONO: 569223344556, COMENTARIOS: '', ADJUNTO: 0 },
-        { ID: 9, NOMBRE: 'EFE VALPO', RUT: '99.999.999-9', DIRECCION: 'Av Providencia 2250', CONTACTO: 'Juan Perez', CORREO: 'juan.perez@gmail.com', TELEFONO: 569223344556, COMENTARIOS: '', ADJUNTO: 0 },
-      ],
+      clientes:[],
       clientesHeaders:[
-        { title: "ID", key: "ID" },
-        { title: "NOMBRE", key: "NOMBRE" },
-        { title: "RUT", key: "RUT" },
-        { title: "DIRECCION", key: "DIRECCION" },
-        { title: "CONTACTO", key: "CONTACTO" },
-        { title: "CORREO", key: "CORREO" },
-        { title: "TELEFONO", key: "TELEFONO" },
-        { title: "COMENTARIOS", key: "COMENTARIOS" },
-        { title: "Adjunto", key: "archivoAdjunto", sortable: false },
+        { title: "NOMBRE", key: "nombre" },
+        { title: "FECHA CREACION", key: "fecha_creacion" },
+        { title: "DIRECCION", key: "direccion" },
+        { title: "CONTACTO", key: "correo" },
+        { title: "CONTACTO", key: "telefono" },
+        { title: "COMENTARIOS", key: "comentarios" },
+        // { title: "COMENTARIOS", key: "COMENTARIOS" },
+        // { title: "Adjunto", key: "archivoAdjunto", sortable: false },
         { title: "Acción", key: "actions", sortable: false },
       ]
     },
@@ -54,6 +45,9 @@ export default {
       getclientesHeaders: state => state.clientesHeaders
     },
     mutations:{
+      SET_CLIENTES(state, data){
+        state.clientes=data
+      },
       UPDATE_DESSERT(state, { index, item }) {
         // Actualiza un elemento específico en el array de clientes
         state.clientes[index] = item;
@@ -68,17 +62,57 @@ export default {
       }
     },
     actions: {
-      updateDessert({ commit }, payload) {
-        commit('UPDATE_DESSERT', payload);
+      async leerClientes({ commit }){
+        const url = "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/clientes";
+        const response = await axios.get(url);
+        const clientesFormateados = response.data.map(idic => ({
+          ...idic,
+          fecha_creacion: formatearFecha(idic.fecha_creacion),
+        }));
+        commit("SET_CLIENTES", clientesFormateados);
       },
-      createCliente({ commit }, payload) {
-        commit('CREATE_CLIENTE', payload);
+      async updateCliente({ dispatch }, payload) {
+        console.log(payload.item)
+        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/clientes/${payload.item._id}`;
+        payload.item.fecha_creacion = convertirDDMMYYYYaISO(payload.item.fecha_creacion);
+        await axios.put(url, payload.item); // El segundo argumento es el cuerpo de la solicitud
+        dispatch('leerClientes');
+        // commit('UPDATE_DESSERT', payload.index,response.data);
       },
-      deleteCliente({ commit }, payload) {
-        commit('DELETE_CLIENTE', payload);
+      async createCliente({ dispatch }, payload) {
+        console.log(payload.item)
+        const url= "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/clientes"
+        payload.item.fecha_creacion = convertirDDMMYYYYaISO(payload.item.fecha_creacion);
+        await axios.post(url, payload.item);
+        dispatch('leerClientes');
+      },
+      async deleteCliente({ dispatch }, payload) {
+        console.log(payload.item._id)
+        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/clientes/${payload.item._id}`;
+        await axios.delete(url);
+        dispatch('leerClientes');
       },
       
     }
     
     // mutations y actions si las necesitas
   }
+
+
+  // Función de ayuda para formatear las fechas
+function formatearFecha(fechaISO) {
+  const fecha = new Date(fechaISO);
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // getMonth() es base-0
+  const año = fecha.getFullYear();
+  // const hora = fecha.getHours().toString().padStart(2, '0');
+  // const minutos = fecha.getMinutes().toString().padStart(2, '0');
+  return `${dia}-${mes}-${año}`;
+}
+
+
+function convertirDDMMYYYYaISO(fechaDDMMYYYY) {
+  const [dia, mes, año] = fechaDDMMYYYY.split('-');
+  const fecha = new Date(año, mes - 1, dia);
+  return fecha.toISOString();
+}

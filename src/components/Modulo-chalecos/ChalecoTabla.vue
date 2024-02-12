@@ -98,23 +98,19 @@ import exportFromJSON from "export-from-json";
 export default {
   data: () => ({
     editedItemLocal: {
-      ID_CHALECO: "",
-      ID_POLIZA: "",
-      MODELO: "",
-      TALLA: "",
-      VENCIMIENTO_FUNDA: "",
-      VENCIMIENTO_PANEL: "",
-      CLIENTE : ""
+      id_chaleco: 1,
+      id_idic: 1,
+      modelo: "",
+      status: "stock",
+      talla: ""
       // ... otros campos
     },
     editedItemDefault: {
-      ID_CHALECO: "",
-      ID_POLIZA: "",
-      MODELO: "",
-      TALLA: "",
-      VENCIMIENTO_FUNDA: "",
-      VENCIMIENTO_PANEL: "",
-      CLIENTE : ""
+      id_chaleco: 1,
+      id_idic: 1,
+      modelo: "",
+      status: "stock",
+      talla: ""
       // ... otros campos
     },
     search: "",
@@ -155,9 +151,14 @@ export default {
 
   created() {},
 
+  mounted(){
+    this.$store.dispatch("chalecos/leerChalecos")
+  },
+
+
   methods: {
     ...mapMutations("chalecos", ["updateField"]),
-    ...mapActions("chalecos", ["updateChaleco", "createChaleco", "deleteChaleco"]),
+    ...mapActions("chalecos", ["leerChalecos","updateChaleco", "createChaleco", "deleteChaleco"]),
 
     editItem(item) {
       this.editedIndex = this.chalecos.indexOf(item);
@@ -172,7 +173,7 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("chalecos/deleteChaleco", { index: this.editedIndex });
+      this.$store.dispatch("chalecos/deleteChaleco", { item: this.editedItemLocal });
       this.closeDelete();
     },
 

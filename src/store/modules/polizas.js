@@ -5,41 +5,23 @@ export default {
     namespaced: true,
     state: {
       fields: [
-        { label: 'ID', model: 'ID' },
-        { label: 'LOTE', model: 'LOTE' },
-        { label: 'SERIE', model: 'SERIE' },
-        { label: 'TALLA', model: 'TALLA' },
-        { label: 'IDIC', model: 'IDIC' },
-        { label: 'POLIZA', model: 'POLIZA' }
+        { label: 'LOTE', model: 'lote' },
+        { label: 'SERIE', model: 'serie' },
+        { label: 'IDIC', model: 'idic' },
+        { label: 'NOMBRE', model: 'poliza_nombre' },
+        { label: 'FECHA POLIZA', model: 'fecha_poliza' },
+        { label: 'FECHA VENCIMIENTO', model: 'fecha_poliza_vencimiento' }
         // ... otros campos
       ],
-    //   polizas:[ { ID: '1', LOTE: 'ARM 01 24', SERIE: 1, TALLA: 'S', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '2', LOTE: 'ARM 01 24', SERIE: 2, TALLA: 'S', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '3', LOTE: 'ARM 01 24', SERIE: 3, TALLA: 'S', IDIC: 'DJS 01 235', POLIZA: 123548  },
-    //   { ID: '4', LOTE: 'ARM 01 24', SERIE: 4, TALLA: 'M', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '5', LOTE: 'ARM 01 24', SERIE: 5, TALLA: 'M', IDIC: 'DJS 01 235', POLIZA: 123548},
-    //   { ID: '6', LOTE: 'ARM 01 24', SERIE: 6, TALLA: 'M', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '7', LOTE: 'ARM 01 24', SERIE: 7, TALLA: 'M', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '8', LOTE: 'ARM 01 24', SERIE: 8, TALLA: 'L', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '9', LOTE: 'ARM 01 24', SERIE: 9, TALLA: 'L', IDIC: 'DJS 01 235', POLIZA: 123548},
-    //   { ID: '10', LOTE: 'ARM 01 24', SERIE: 10, TALLA: 'L', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '11', LOTE: 'ARM 01 24', SERIE: 11, TALLA: 'L', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '12', LOTE: 'ARM 01 24', SERIE: 12, TALLA: 'XL', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '13', LOTE: 'ARM 01 24', SERIE: 13, TALLA: 'XL', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '14', LOTE: 'ARM 01 24', SERIE: 14, TALLA: 'XL', IDIC: 'DJS 01 235', POLIZA: 123548 },
-    //   { ID: '15', LOTE: 'ARM 01 24', SERIE: 15, TALLA: 'XL', IDIC: 'DJS 01 235', POLIZA: 123548  },
-    //   { ID: '16', LOTE: 'ARM 01 24', SERIE: 16, TALLA: 'XL', IDIC: 'DJS 01 235', POLIZA: 123548 }
-    // ],
 
       polizas:[],
     
-    
-
+  
       polizaHeaders:[
-        { title: 'Id', key: 'id_poliza' },
+        { title: 'Id', key: 'id_idic' },
         { title: 'Lote', key: 'lote' },
         { title: 'Serie', key: 'serie' },
-        { title: 'Talla', key: 'talla' },
+        // { title: 'Talla', key: 'talla' },
         { title: 'Idic', key: 'idic' },
         { title: 'Poliza', key: 'poliza_nombre' },
         { title: 'Fecha Creacion', key: 'fecha_poliza' },
@@ -59,9 +41,9 @@ export default {
 
       UPDATE_DESSERT(state, { index, item }) {
         // Actualiza un elemento específico en el array de polizas
-        state.polizas2[index] = item;
+        state.polizas[index] = item;
       },
-      CREATE_POLIZA(state, {item }) {
+      CREATE_POLIZA(state, item ) {
         // Actualiza un elemento específico en el array de polizas
         state.polizas.push(item)
       },
@@ -72,22 +54,55 @@ export default {
     },
     actions: {
       async leerIdics({ commit }){
-        const url= "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/idic"
-        const response = await axios.get(url)
-        commit("SET_IDICS", response.data)
+        const url = "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/idic";
+        const response = await axios.get(url);
+        const idicsFormateados = response.data.map(idic => ({
+          ...idic,
+          fecha_poliza: formatearFecha(idic.fecha_poliza),
+          fecha_poliza_vencimiento: formatearFecha(idic.fecha_poliza_vencimiento)
+        }));
+        commit("SET_IDICS", idicsFormateados);
       },
 
-      updateDessert({ commit }, payload) {
-        commit('UPDATE_DESSERT', payload);
+      async updateDessert({ dispatch }, payload) {
+        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/idic/${payload.item._id}`;
+        payload.item.fecha_poliza = convertirDDMMYYYYaISO(payload.item.fecha_poliza);
+        payload.item.fecha_poliza_vencimiento = convertirDDMMYYYYaISO(payload.item.fecha_poliza_vencimiento); // Incluye el ID en la URL
+        await axios.put(url, payload.item); // El segundo argumento es el cuerpo de la solicitud
+        dispatch('leerIdics');
+        // commit('UPDATE_DESSERT', payload.index,response.data);
       },
-      createPoliza({ commit }, payload) {
-        commit('CREATE_POLIZA', payload);
+      async createPoliza({ dispatch }, payload) {
+        const url= "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/idic"
+        payload.item.fecha_poliza = convertirDDMMYYYYaISO(payload.item.fecha_poliza);
+        payload.item.fecha_poliza_vencimiento = convertirDDMMYYYYaISO(payload.item.fecha_poliza_vencimiento);
+        await axios.post(url, payload.item);
+        dispatch('leerIdics');
       },
-      deletePoliza({ commit }, payload) {
-        commit('DELETE_POLIZA', payload);
+      async deletePoliza({ dispatch }, payload) {
+        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/idic/${payload.item._id}`;
+        await axios.delete(url);
+        dispatch('leerIdics');
       },
     }
     
   }
 
 
+// Función de ayuda para formatear las fechas
+function formatearFecha(fechaISO) {
+  const fecha = new Date(fechaISO);
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // getMonth() es base-0
+  const año = fecha.getFullYear();
+  // const hora = fecha.getHours().toString().padStart(2, '0');
+  // const minutos = fecha.getMinutes().toString().padStart(2, '0');
+  return `${dia}-${mes}-${año}`;
+}
+
+
+function convertirDDMMYYYYaISO(fechaDDMMYYYY) {
+  const [dia, mes, año] = fechaDDMMYYYY.split('-');
+  const fecha = new Date(año, mes - 1, dia);
+  return fecha.toISOString();
+}

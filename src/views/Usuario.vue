@@ -3,5 +3,5 @@
 </template>
 
 <script setup>
-  import Componente_usuario from '@/components/Modulo-usuarios/componente_usuario.vue'
+  import Componente_usuario from '@/components/Modulo-usuarios/componente_aut.vue'
 </script>

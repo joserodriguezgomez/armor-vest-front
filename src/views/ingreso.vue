@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       tab: "Lotes IDIC",
-      items: ["Lotes IDIC", "Lotes NO IDIC"],
+      items: ["Lotes IDIC"],
       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     };
   },

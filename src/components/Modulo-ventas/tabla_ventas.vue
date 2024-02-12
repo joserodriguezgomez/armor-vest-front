@@ -127,44 +127,29 @@ import exportFromJSON from "export-from-json";
 export default {
   data: () => ({
     editedItemLocal: {
-      ID: "",
-      LOTE: "",
-      SERIE: "",
-      TALLA: 0,
-      MODELO: "",
-      IDIC: "",
-      POLIZA: 0,
-      FACTURA: 0,
-      GD: 0,
-      VENTA: new Date(),
-      CLIENTE: "",
-      VEN_FUNDA: new Date(),  
-      VEN_PANEL: new Date(),
-      VEN_POLIZA: new Date(),
-      VENDEDOR: "",
-      COMENTARIOS: "",
-      ADJUNTO: null,
-
+      _id:"",
+      id_venta: 1,
+      id_producto: 1,
+      factura: "",
+      gd: "",
+      fecha_venta: new Date().toISOString(),
+      id_cliente: 1,
+      id_vendedor: 1,
+      comentarios: "",
+      precio: 0
       // ... otros campos
     },
     editedItemDefault: {
-      ID: "",
-      LOTE: "",
-      SERIE: "",
-      TALLA: 0,
-      MODELO: "",
-      IDIC: "",
-      POLIZA: 0,
-      FACTURA: 0,
-      GD: 0,
-      VENTA: new Date(),
-      CLIENTE: "",
-      VEN_FUNDA: new Date(),
-      VEN_PANEL: new Date(),
-      VEN_POLIZA: new Date(),
-      VENDEDOR: "",
-      COMENTARIOS: "",
-      ADJUNTO: null,
+      _id:"",
+      id_venta: 1,
+      id_producto: 1,
+      factura: "",
+      gd: "",
+      fecha_venta: new Date().toISOString(),
+      id_cliente: 1,
+      id_vendedor: 1,
+      comentarios: "",
+      precio: 0
       // ... otros campos
     },
     dialog: false,
@@ -200,13 +185,43 @@ export default {
 
   created() {},
 
+  mounted(){
+    this.$store.dispatch("ventas/leerVentas")
+  },
   methods: {
-    ...mapActions("ventas", ["updateDessert", "createVenta", "deleteVenta"]),
+    ...mapActions("ventas", ["updateVentas", "createVenta", "deleteVenta","leerVentas"]),
 
     editItem(item) {
       console.log("editando");
       this.editedIndex = this.ventas.indexOf(item);
-      this.editedItemLocal = Object.assign({}, item);
+
+      const { 
+        _id,
+        id_venta,
+        id_producto,
+        factura,
+        gd,
+        fecha_venta,
+        id_cliente,
+        id_vendedor,
+        comentarios,
+        precio
+      } = item;
+
+      this.editedItemLocal = {
+        _id,
+        id_venta,
+        id_producto,
+        factura,
+        gd,
+        fecha_venta,
+        id_cliente,
+        id_vendedor,
+        comentarios,
+        precio
+        // Puedes establecer valores por defecto para cualquier propiedad que pueda faltar en 'item'
+      };
+      // this.editedItemLocal = Object.assign({}, item);
       this.dialog = true;
     },
 
@@ -217,7 +232,7 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("ventas/deleteVenta", { index: this.editedIndex });
+      this.$store.dispatch("ventas/deleteVenta", { item: this.editedItemLocal  });
       this.closeDelete();
     },
 
@@ -235,7 +250,7 @@ export default {
       console.log("guardando");
       if (this.editedIndex > -1) {
         // Object.assign(this.bla[this.editedIndex], this.editedItem)
-        this.$store.dispatch("ventas/updateDessert", {
+        this.$store.dispatch("ventas/updateVentas", {
           index: this.editedIndex,
           item: this.editedItemLocal,
         });
