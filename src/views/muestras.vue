@@ -3,7 +3,7 @@
 </template>
 
 <script >
-import Componente_muestras from "@/components/Modulo-muestras/Componente_muestras.vue";
+import Componente_muestras from "@/components/Modulo-muestras/componente_muestras.vue";
 
 export default {
   
