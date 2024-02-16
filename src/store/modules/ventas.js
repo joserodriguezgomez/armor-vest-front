@@ -30,6 +30,7 @@ export default {
         { title: 'FECHA POLIZA', key: 'fecha_poliza' },
         { title: "FECHA VENCIMIENTO", key: "fecha_poliza_vencimiento" },
         { title: "CLIENTE", key: "nombre" },
+        { title: 'DUP ESTADO', key: 'dup_status' },
         { title: "Acción", key: "actions", sortable: false },
       ]
     },

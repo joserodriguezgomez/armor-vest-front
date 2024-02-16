@@ -22,6 +22,7 @@ export default {
       { title: 'MODELO', key: 'modelo' },
       { title: 'ESTADO', key: 'status' },
       { title: 'TALLA', key: 'talla' },
+      { title: 'DUP ESTADO', key: 'dup_status' },
       // { title: 'CLIENTE', key: 'CLIENTE' },
       { title: 'Actions', key: 'actions', sortable: false }
       
