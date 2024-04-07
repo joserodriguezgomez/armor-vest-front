@@ -4,6 +4,8 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
+      showAlert: false,
+      falertMessage: '',
       fields: [
         { label: 'LOTE', model: 'lote' },
         { label: 'SERIE', model: 'serie' },
@@ -34,7 +36,12 @@ export default {
       getPolizaHeaders: state => state.polizaHeaders
     },
     mutations:{
-
+      SET_SHOW_ALERT(state, value) {
+        state.showAlert = value;
+      },
+      SET_MSG_ALERT(state, value) {
+        state.falertMessage = value;
+      },
       SET_IDICS(state, data){
         state.polizas=data
       },

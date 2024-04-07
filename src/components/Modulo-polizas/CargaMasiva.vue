@@ -1,6 +1,8 @@
 <template>
+
   <v-container>
     <v-row>
+      
       <v-col cols="12" sm="6">
         <!-- Componente de Vuetify para la selección de archivos -->
         <v-file-input
@@ -23,15 +25,27 @@
 </template>
 
 <script>
+
+import axios from "axios";
+
+import {mapState, mapMutations} from "vuex";
+
 export default {
   data() {
     return {
       file: null,
     };
   },
+  computed:{
+      ...mapMutations("polizas",["SET_SHOW_ALERT","SET_MSG_ALERT"]),
+      ...mapState("polizas", [
+      "showAlert",
+      "falertMessage"
+    ]),
+  },
   methods: {
-    handleFileUpload(file) {
-      this.file = file;
+    handleFileUpload(event) {
+      this.file = event.target.files[0];
     },
     async submitFile() {
       if (!this.file) return;
@@ -39,15 +53,21 @@ export default {
       formData.append('file', this.file);
 
       try {
-        let response = await this.$axios.post('http://tu-backend.com/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        console.log(response.data);
+
+        console.log(formData)
+        const url = "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/uploadfile/";
+        let response = await axios.post(url, formData)
+        this.$store.commit('polizas/SET_MSG_ALERT', "Poliza cargada con éxito")
+        this.$store.commit('polizas/SET_SHOW_ALERT', true)
       } catch (error) {
         console.error(error);
       }
+      finally {
+    // Ocultar la alerta después de 3 segundos, independientemente del resultado de la carga
+      setTimeout(() => {
+      this.$store.commit('polizas/SET_SHOW_ALERT', false)
+    }, 3000); // Ajusta este valor según lo necesites
+  }
     },
   },
 };
