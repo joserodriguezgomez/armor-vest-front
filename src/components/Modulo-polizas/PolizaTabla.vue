@@ -27,6 +27,9 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ props }">
+
+
+            
             <v-btn
               density="compact"
               icon="mdi-plus"
@@ -50,6 +53,25 @@
             >
             </v-btn>
 
+
+          <v-btn
+              density="compact"
+              icon="mdi-cloud-upload"
+              size="x-large"
+              color="black"
+              @click="dialogCargaMasiva = true"
+            >
+            </v-btn>
+
+
+            <v-btn
+              density="compact"
+              icon="mdi-delete"
+              size="x-large"
+              color="black"
+              @click="dialogEliminaMasiva = true"
+            >
+            </v-btn>
 
 
 
@@ -89,6 +111,51 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+
+    <v-alert v-if="showAlert" type="success" dismissible @dismiss="showAlert = false">
+    {{ falertMessage }}
+  </v-alert>
+
+
+      <v-dialog v-model="dialogCargaMasiva" max-width="800px">
+    <v-card>
+      <v-card-title>
+        Carga masiva
+      </v-card-title>
+      <v-card-text>
+        <cargaMasiva/>
+        <!-- Aquí puedes agregar contenido más adelante si lo deseas -->
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="dialogCargaMasiva = false">Cerrar</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+
+
+      <v-dialog v-model="dialogEliminaMasiva" max-width="800px">
+    <v-card>
+      <v-card-title>
+        Elimina poliza
+      </v-card-title>
+      <v-card-text>
+        <eliminaMasiva/>
+        <!-- Aquí puedes agregar contenido más adelante si lo deseas -->
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="dialogEliminaMasiva = false">Cerrar</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+
+
+
+
+
     </template>
     <template v-slot:item.actions="{ item }">
       <v-icon size="small" class="me-2" @click="editItem(item)">mdi-pencil</v-icon>
@@ -102,8 +169,11 @@
 <script>
 import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 import cargaMasiva from '@/components/Modulo-polizas/CargaMasiva.vue';
+import eliminaMasiva from '@/components/Modulo-polizas/EliminaMasiva.vue';
 export default {
   data: () => ({
+    dialogEliminaMasiva:false,
+    dialogCargaMasiva:false,
     editedItemLocal: {
       id_idic: 1,
       lote: "",
@@ -133,7 +203,8 @@ export default {
     
   }),
   components:{
-    cargaMasiva
+    cargaMasiva,
+    eliminaMasiva
   },
   computed: {
     ...mapGetters("polizas", ["getPolizas", "getPolizaHeaders"]),
@@ -142,7 +213,9 @@ export default {
       "fields",
       "polizas",
       "poli",
-      "polizaHeaders"
+      "polizaHeaders",
+      "showAlert",
+      "falertMessage"
     ]),
     formTitle() {
       return this.editedIndex === -1 ? "Nueva Poliza" : "Editar Poliza";
@@ -172,7 +245,7 @@ export default {
   created() {},
 
   methods: {
-    ...mapMutations("polizas", ["updateField", "SET_IDICS"]),
+    ...mapMutations("polizas", ["updateField", "SET_IDICS","SET_SHOW_ALERT"]),
     ...mapActions("polizas", ["updateDessert", "createPoliza", "deletePoliza", "leerIdics"]),
 
     handleRowClick(event, item) {

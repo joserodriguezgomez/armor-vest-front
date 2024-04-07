@@ -1,17 +1,11 @@
 <template>
   <v-container fluid>
     <v-row>
-      <!-- Ajuste en el tamaño de las columnas para alinear cargaMasiva a la derecha -->
-      <v-col cols="12" md="7">
+      <v-col cols="12" md="12">
         <polizaTable @selected-poliza="selectRow" />
       </v-col>
-      <v-col cols="12" md="5">
-        <cargaMasiva />
-      </v-col>
-      <!-- Comentario temporal para ChalecosDetail, ajusta las columnas según necesites reactivarlo -->
-      <!-- <v-col cols="12" md="5">
-         <ChalecosDetail :product="selectedChalecos" />
-      </v-col> -->
+      <!-- Botón para abrir la ventana desplegable -->
+      <!-- Ventana desplegable para cargaMasiva -->
     </v-row>
   </v-container>
 </template>
@@ -46,7 +40,8 @@ import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 export default {
   data() {
     return {
-      selectedChalecos:[]
+      selectedChalecos:[],
+      mostrarCargaMasiva: false
     }
   },
   components: {
