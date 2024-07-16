@@ -3,6 +3,8 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
+      urlMode : "http://127.0.0.1:8000/api/",
+      // urlMode : "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api",
       editedItem: {
         ID: 0,
         NOMBRE: '',
@@ -62,8 +64,8 @@ export default {
       }
     },
     actions: {
-      async leerClientes({ commit }){
-        const url = "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/clientes";
+      async leerClientes({ commit, state }){
+        const url = state.urlMode + "clientes";
         const response = await axios.get(url);
         const clientesFormateados = response.data.map(idic => ({
           ...idic,
@@ -71,24 +73,24 @@ export default {
         }));
         commit("SET_CLIENTES", clientesFormateados);
       },
-      async updateCliente({ dispatch }, payload) {
+      async updateCliente({ dispatch, state }, payload) {
         console.log(payload.item)
-        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/clientes/${payload.item._id}`;
+        const url = state.urlMode + `clientes/${payload.item._id}`;
         payload.item.fecha_creacion = convertirDDMMYYYYaISO(payload.item.fecha_creacion);
         await axios.put(url, payload.item); // El segundo argumento es el cuerpo de la solicitud
         dispatch('leerClientes');
         // commit('UPDATE_DESSERT', payload.index,response.data);
       },
-      async createCliente({ dispatch }, payload) {
+      async createCliente({ dispatch, state }, payload) {
         console.log(payload.item)
-        const url= "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/clientes"
+        const url= state.urlMode + "clientes"
         payload.item.fecha_creacion = convertirDDMMYYYYaISO(payload.item.fecha_creacion);
         await axios.post(url, payload.item);
         dispatch('leerClientes');
       },
-      async deleteCliente({ dispatch }, payload) {
+      async deleteCliente({ dispatch, state }, payload) {
         console.log(payload.item._id)
-        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/clientes/${payload.item._id}`;
+        const url = state.urlMode + `clientes/${payload.item._id}`;
         await axios.delete(url);
         dispatch('leerClientes');
       },

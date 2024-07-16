@@ -3,6 +3,8 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
+      urlMode : "http://127.0.0.1:8000/api/",
+      // urlMode : "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api",
       editedItem: {
         ID: '',
         NOMBRE: '',
