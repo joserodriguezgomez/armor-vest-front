@@ -3,6 +3,8 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
+      urlMode : "http://127.0.0.1:8000/api/",
+      // urlMode : "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api",
       fields: [
         { label: 'FACTURA', model: 'factura' },
         { label: 'GD', model: 'gd' },
@@ -27,8 +29,9 @@ export default {
         { title: "SERIE", key: "serie" },
         { title: "IDIC", key: "idic" },
         { title: "POLIZA NOMBRE", key: "poliza_nombre" },
-        { title: 'FECHA POLIZA', key: 'fecha_poliza' },
-        { title: "FECHA VENCIMIENTO", key: "fecha_poliza_vencimiento" },
+        { title: "VENCIMIENTO POLIZA", key: "fecha_poliza_vencimiento" },
+        { title: "VENCIMIENTO PANEL", key: "vencimiento_chelco" },
+        { title: "VENCIMIENTO FUNDA", key: "vencimiento_funda" },
         { title: "CLIENTE", key: "nombre" },
         { title: 'DUP ESTADO', key: 'dup_status' },
         { title: "Acción", key: "actions", sortable: false },
@@ -52,8 +55,8 @@ export default {
       }
     },
     actions: {
-      async leerVentas({ commit }){
-        const url = "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/ventas";
+      async leerVentas({ commit, state }){
+        const url = state.urlMode +"ventas";
         const response = await axios.get(url);
         console.log(response.data)
         const idicsFormateados = response.data.map(idic => ({
@@ -66,12 +69,12 @@ export default {
         }));
         commit("SET_VENTA", idicsFormateados);
       },
-      async updateVentas({ dispatch }, payload) {
+      async updateVentas({ dispatch, state }, payload) {
 
         payload.item.precio = parseFloat(payload.item.precio);
         payload.item.comentarios = "bla"
         
-        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/ventas/${payload.item._id}`;
+        const url = state.urlMode + `ventas/${payload.item._id}`;
         // payload.item.fecha_poliza = convertirDDMMYYYYaISO(payload.item.fecha_poliza);
         // payload.item.fecha_poliza_vencimiento = convertirDDMMYYYYaISO(payload.item.fecha_poliza_vencimiento);
         payload.item.fecha_venta = convertirDDMMYYYYaISO(payload.item.fecha_venta)
@@ -82,17 +85,17 @@ export default {
         dispatch('leerVentas');
         // commit('UPDATE_DESSERT', payload.index,response.data);
       },
-      async createVenta({ dispatch }, payload) {
+      async createVenta({ dispatch, state }, payload) {
         console.log(payload.item)
-        const url= "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/ventas"
+        const url=  state.urlMode + "ventas"
         // payload.item.fecha_poliza = convertirDDMMYYYYaISO(payload.item.fecha_poliza);
         // payload.item.fecha_venta = convertirDDMMYYYYaISO(payload.item.fecha_venta);
         console.log(payload.item)
         await axios.post(url, payload.item);
         dispatch('leerVentas');
       },
-      async deleteVenta({ dispatch }, payload) {
-        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/ventas/${payload.item._id}`;
+      async deleteVenta({ dispatch, state }, payload) {
+        const url = state.urlMode + `ventas/${payload.item._id}`;
         await axios.delete(url);
         dispatch('leerVentas');
       },

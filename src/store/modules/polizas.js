@@ -4,6 +4,8 @@ import axios from "axios";
 export default {
     namespaced: true,
     state: {
+      urlMode : "http://127.0.0.1:8000/api/",
+      // urlMode : "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api",
       showAlert: false,
       falertMessage: '',
       fields: [
@@ -60,8 +62,8 @@ export default {
       }
     },
     actions: {
-      async leerIdics({ commit }){
-        const url = "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/idic";
+      async leerIdics({ commit, state }){
+        const url = state.urlMode + "idic";
         const response = await axios.get(url);
         const idicsFormateados = response.data.map(idic => ({
           ...idic,
@@ -71,23 +73,23 @@ export default {
         commit("SET_IDICS", idicsFormateados);
       },
 
-      async updateDessert({ dispatch }, payload) {
-        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/idic/${payload.item._id}`;
+      async updateDessert({ dispatch, state }, payload) {
+        const url = state.urlMode +`idic/${payload.item._id}`;
         payload.item.fecha_poliza = convertirDDMMYYYYaISO(payload.item.fecha_poliza);
         payload.item.fecha_poliza_vencimiento = convertirDDMMYYYYaISO(payload.item.fecha_poliza_vencimiento); // Incluye el ID en la URL
         await axios.put(url, payload.item); // El segundo argumento es el cuerpo de la solicitud
         dispatch('leerIdics');
         // commit('UPDATE_DESSERT', payload.index,response.data);
       },
-      async createPoliza({ dispatch }, payload) {
-        const url= "https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/idic"
+      async createPoliza({ dispatch, state }, payload) {
+        const url= state.urlMode + "idic"
         payload.item.fecha_poliza = convertirDDMMYYYYaISO(payload.item.fecha_poliza);
         payload.item.fecha_poliza_vencimiento = convertirDDMMYYYYaISO(payload.item.fecha_poliza_vencimiento);
         await axios.post(url, payload.item);
         dispatch('leerIdics');
       },
-      async deletePoliza({ dispatch }, payload) {
-        const url = `https://armor-vest-backend-fb07262d3ec2.herokuapp.com/api/idic/${payload.item._id}`;
+      async deletePoliza({ dispatch, state }, payload) {
+        const url = state.urlMode +`idic/${payload.item._id}`;
         await axios.delete(url);
         dispatch('leerIdics');
       },

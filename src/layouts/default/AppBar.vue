@@ -105,7 +105,7 @@
       </v-navigation-drawer>
 
       <my-toolbar :drawer="drawer"></my-toolbar>
-      <v-main class="custom-main" style="height: 1300px">
+      <v-main class="custom-main">
         <!-- <div class="main-header">{{ this.main_title }}</div> -->
         <router-view></router-view>
       </v-main>

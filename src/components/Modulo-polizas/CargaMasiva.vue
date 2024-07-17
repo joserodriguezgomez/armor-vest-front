@@ -9,7 +9,7 @@
           label="Adjuntar Excel para carga masiva"
           @change="handleFileUpload"
           :clearable="true"
-          clear-icon="mdi-close-circle-outline"
+          clear-icon="mdi-file"
           prepend-icon="mdi-paperclip"
           accept=".xlsx"
         ></v-file-input>

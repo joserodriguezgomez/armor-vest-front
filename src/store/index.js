@@ -6,6 +6,7 @@ import ventas from './modules/ventas';
 import usuarios from './modules/usuarios';
 import clientes from './modules/clientes';
 import menu from './modules/menu';
+import products from './modules/products';
 
 
 
@@ -16,6 +17,7 @@ export default createStore({
     chalecos,
     usuarios,
     clientes,
-    menu
+    menu,
+    products
   }
 });

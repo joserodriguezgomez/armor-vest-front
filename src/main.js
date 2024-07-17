@@ -8,7 +8,6 @@
 import App from './App.vue'
 import store from '@/store'
 
-
 // Composables
 import { createApp } from 'vue'
 
