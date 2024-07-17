@@ -1,18 +1,27 @@
 <template>
-  <v-container fluid class = "mi-fondo-personalizado">
+
+  <v-container fluid class="mi-fondo-personalizado">
+  <v-alert
+    v-if="alertSuccess"
+    text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima, at placeat totam, magni doloremque veniam neque porro libero rerum unde voluptatem!"
+    title="Alert title"
+    type="success"
+  ></v-alert>
+
     <v-row>
-      <v-col cols="12" sm="3">
-        <v-select v-model="filterTalla" :items="tallaItems" label="Filtrar por Talla"></v-select>
-      </v-col>
-      <v-col cols="12" sm="3">
-        <v-text-field v-model="filterCliente" label="Filtrar por Cliente"></v-text-field>
-      </v-col>
-      <v-col cols="12" sm="3">
-        <v-text-field v-model="filterSerie" label="Filtrar por Serie"></v-text-field>
+      <v-col cols="12" sm="3" v-for="(filter, index) in filters" :key="index">
+        <v-select
+          v-model="filter.value"
+          :items="filter.items"
+          :label="filter.label"
+          @change="applyFilters"
+          outlined
+        ></v-select>
       </v-col>
     </v-row>
+
     <v-row>
-      <v-col cols="12" offset="11">
+      <v-col cols="1" offset = "9">
         <v-btn
           class="v-btn--floating"
           color="primary"
@@ -24,10 +33,40 @@
           <!-- Icono dentro del botón -->
         </v-btn>
       </v-col>
+
+
+      <v-col cols="1">
+        <v-btn class="v-btn--floating" color="primary" dark fab @click="excelDownload()">
+          <v-icon>mdi-download</v-icon>
+          <!-- Icono dentro del botón -->
+        </v-btn>
+      </v-col>
+
+
+
+      <v-col cols="1">
+        <v-btn
+          class="v-btn--floating"
+          color="primary"
+          dark
+          fab
+          @click="openDialogFile()"
+        >
+          <v-icon>mdi-file-excel</v-icon>
+          <!-- Icono dentro del botón -->
+        </v-btn>
+      </v-col>
+
     </v-row>
 
     <v-row>
-      <v-col v-for="chaleco in filteredProductData" :key="chaleco.idChaleco" cols="12" sm="3" md="3">
+      <v-col
+        v-for="chaleco in filteredProductData"
+        :key="chaleco.idChaleco"
+        cols="12"
+        sm="3"
+        md="3"
+      >
         <v-card
           :class="{
             'card-style': true,
@@ -64,19 +103,19 @@
             </p>
             <div v-if="chaleco.status === 'vendido'">
               <p>
-              <strong>Cliente:</strong>
-              {{ chaleco.cliente }}
-            </p>
-            <p>
-              <strong>Fecha de venta:</strong>
-              {{ new Date(chaleco.fechaVenta).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}
-            </p>
+                <strong>Cliente:</strong>
+                {{ chaleco.cliente }}
+              </p>
+              <p>
+                <strong>Fecha de venta:</strong>
+                {{ new Date(chaleco.fechaVenta).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}
+              </p>
             </div>
           </v-card-text>
           <v-card-actions class="primary lighten-4">
             <v-spacer></v-spacer>
             <v-icon small class="mr-2" @click="openDialog(chaleco, true)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteChaleco(chaleco.idChaleco)">mdi-delete</v-icon>
+            <v-icon small @click="deleteChaleco(chaleco)">mdi-delete</v-icon>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -165,22 +204,87 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+
+
+
+   <v-dialog v-model="dialog2" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Subir Archivo Excel</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="form" @submit.prevent="submitForm">
+            <v-file-input
+              label="Adjuntar Excel para carga masiva"
+              @change="handleFileUpload"
+              :clearable="true"
+              clear-icon="mdi-file"
+              prepend-icon="mdi-paperclip"
+              accept=".xlsx"
+
+            ></v-file-input>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <!-- Botón para cancelar y cerrar el diálogo -->
+          <v-btn color="blue-grey" @click="dialog2 = false">Cancelar</v-btn>
+          <!-- Botón para enviar el formulario -->
+          <v-btn color="primary" @click="submitFile">Enviar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+ <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5">¿Esta seguro de eliminar este registro?</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancelar</v-btn>
+              <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm()">Eliminar</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+  </v-dialog>
+
+
+
+
+
+
+
+
+
+
+
+
   </v-container>
 </template>
 
 <script>
 import { mapState, mapActions, mapMutations } from "vuex";
+import exportFromJSON from "export-from-json";
+import axios from "axios";
 
 export default {
   data() {
     return {
+      dialogDelete:false,
+      alertSuccess:false,
+      file: null,
       dialog: false,
+      dialog2: false,
       selectedChaleco: null,
       isEditing: false,
       valid: false,
-      filterTalla: "",
-      filterCliente: "",
-      filterSerie: ""
+      filters: [
+        { key: "talla", label: "Talla", value: "Todas", items: [] },
+        { key: "cliente", label: "Cliente", value: "Todas", items: [] },
+        { key: "polizaNombre", label: "Poliza", value: "Todas", items: [] },
+        { key: "status", label: "Status", value: "Todas", items: [] }
+      ]
     };
   },
   computed: {
@@ -192,23 +296,63 @@ export default {
       return ["Todas", ...uniqueTallas];
     },
     filteredProductData() {
-      return this.productData.filter(chaleco =>
-        chaleco.talla.toLowerCase().includes(this.filterTalla.toLowerCase()) &&
-        chaleco.cliente.toLowerCase().includes(this.filterCliente.toLowerCase()) &&
-        chaleco.serie.toLowerCase().includes(this.filterSerie.toLowerCase())
-      );
+      let filteredData = this.productData;
+
+      this.filters.forEach(filter => {
+        if (filter.value !== "Todas" && filter.value !== "") {
+          filteredData = filteredData.filter(chaleco => {
+            // Verificar si el valor del filtro existe antes de aplicar toLowerCase
+            const chalecoValue = chaleco[filter.key];
+            return (
+              chalecoValue &&
+              chalecoValue.toLowerCase() === filter.value.toLowerCase()
+            );
+          });
+        }
+      });
+
+      return filteredData;
     }
   },
   mounted() {
     this.$store.dispatch("products/fetchProductData");
+  },
+  watch: {
+    productData: {
+      handler(newVal) {
+        this.initializeFilters();
+      },
+      deep: true,
+      immediate: true
+    }
   },
   methods: {
     ...mapMutations("products", ["SET_PRODUCT_DATA"]),
     ...mapActions("products", [
       "fetchProductData",
       "updateProduct",
-      "addProduct"
+      "addProduct",
+      "deleteProduct"
     ]),
+    initializeFilters() {
+      this.filters.forEach(filter => {
+        const uniqueItems = [
+          ...new Set(
+            this.productData.map(chaleco => chaleco[filter.key]).filter(Boolean)
+          )
+        ];
+        filter.items = ["Todas", ...uniqueItems];
+      });
+    },
+
+    applyFilters() {
+      // Forzar la actualización de la lista filtrada
+      this.filteredProductData;
+    },
+
+    openDialogFile(){
+      this.dialog2 = true
+    },
 
     openDialog(chaleco, edit = false, agregar = false) {
       this.isEditing = edit;
@@ -268,10 +412,49 @@ export default {
       this.closeDialog();
     },
 
-    deleteChaleco(idChaleco) {
-      // Lógica para eliminar el chaleco
-      console.log("Delete chaleco with ID:", idChaleco);
-    }
+    deleteChaleco(chaleco) {
+      this.deleteItem = chaleco
+      this.dialogDelete = true
+    },
+
+    deleteItemConfirm() {
+      console.log("chaleco eliminado")
+      this.deleteProduct(this.deleteItem);
+      this.closeDelete();
+    },
+    closeDelete() {
+      this.dialogDelete = false;
+    },
+    excelDownload() {
+      const data = this.filteredProductData;
+      const fileName = "productos";
+      const exportType = exportFromJSON.types.xls;
+      exportFromJSON({ data, fileName, exportType });
+    },
+    handleFileUpload(event) {
+      this.file = event.target.files[0];
+    },
+    async submitFile() {
+      if (!this.file) return;
+      let formData = new FormData();
+      formData.append('file', this.file);
+
+      try {
+
+        console.log(formData)
+        const url = "http://127.0.0.1:8000/api/uploadExcelFile/";
+        let response = await axios.post(url, formData)
+        this.alertSuccess = true
+      } catch (error) {
+        console.error(error);
+      }
+      finally {
+    // Ocultar la alerta después de 3 segundos, independientemente del resultado de la carga
+      setTimeout(() => {
+        this.alertSuccess = false
+    }, 3000); // Ajusta este valor según lo necesites
+  }
+  },
   }
 };
 </script>
@@ -308,7 +491,7 @@ export default {
   background-color: #95e8d7; /* Color verde u otro color para no vendido */
 }
 
-.mi-fondo-personalizado{
+.mi-fondo-personalizado {
   background-color: white;
 }
 </style>

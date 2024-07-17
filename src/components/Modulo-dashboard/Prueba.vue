@@ -14,6 +14,7 @@
 <script>
 import { Bar } from "vue-chartjs";
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels)
 
 import {
@@ -40,17 +41,18 @@ export default {
   components: { Bar },
   data() {
     return {
-      chartData: {
-        labels: ["Loomis", "BCI", "Defensa Cobra","M.La florida","Dicrep","Interpolar",
-        "M.Villa alemana","Vertycal","EFE Valparaiso","M.Quintero"],
-        datasets: [
-          {
-            label: 'Clientes',
-            data: [48, 31, 30,27, 18, 14,13, 12, 12,10],
-            backgroundColor: "#f87979"
-          }
-        ]
-      },
+      // chartData: topClientsChartData,
+      // chartData: {
+      //   // labels: ["Loomis", "BCI", "Defensa Cobra","M.La florida","Dicrep","Interpolar",
+      //   // "M.Villa alemana","Vertycal","EFE Valparaiso","M.Quintero"],
+      //   // datasets: [
+      //   //   {
+      //   //     label: 'Clientes',
+      //   //     data: [48, 31, 30,27, 18, 14,13, 12, 12,10],
+      //   //     backgroundColor: "#f87979"
+      //   //   }
+      //   // ]
+      // },
 
       chartOptions: {
         responsive: true,
@@ -94,6 +96,15 @@ export default {
         }
       }
     };
+  },
+  computed:{
+    ...mapGetters("products", ["topClientsChartData"]),
+    chartData() {
+      return this.topClientsChartData;
+    }
+  },
+  mounted() {
+    console.log(this.topClientsChartData)
   },
 }
 

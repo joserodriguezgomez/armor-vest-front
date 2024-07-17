@@ -10,6 +10,7 @@
 <script>
 import { Bar } from "vue-chartjs";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 import {
   Chart as ChartJS,
   Title,
@@ -35,17 +36,17 @@ export default {
   components: { Bar },
   data() {
     return {
-      chartData: {
-        labels: ["nov-2025", "dic-2025", "jul-2027"],
-        datasets: [
-          {
-            label: 'Monto',
-            data: [102, 12, 285], // Datos de ejemplo
-            backgroundColor: ["#f87979", "#36a2eb", "#ffcd56", "#4bc0c0", "#9966ff"],
-            hoverBackgroundColor: ["#f88f8f", "#5daeff", "#ffda87", "#70d1d1", "#b08eff"]
-          }
-        ]
-      },
+      // chartData: {
+      //   labels: ["nov-2025", "dic-2025", "jul-2027"],
+      //   datasets: [
+      //     {
+      //       label: 'Monto',
+      //       data: [102, 12, 285], // Datos de ejemplo
+      //       backgroundColor: ["#f87979", "#36a2eb", "#ffcd56", "#4bc0c0", "#9966ff"],
+      //       hoverBackgroundColor: ["#f88f8f", "#5daeff", "#ffda87", "#70d1d1", "#b08eff"]
+      //     }
+      //   ]
+      // },
 
       chartOptions: {
         responsive: true,
@@ -87,7 +88,13 @@ export default {
         }
       }
     };
-  }
+  },
+  computed:{
+    ...mapGetters("products", ["expirationsByDateFunda"]),
+    chartData() {
+      return this.expirationsByDateFunda;
+    }
+  },
 };
 </script>
 
