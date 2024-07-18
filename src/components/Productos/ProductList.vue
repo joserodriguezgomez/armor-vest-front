@@ -442,7 +442,7 @@ export default {
       try {
 
         console.log(formData)
-        const url = "http://127.0.0.1:8000/api/uploadExcelFile/";
+        const url = "https://armor-vest-backend-b3be97e8ab51.herokuapp.com/api/uploadExcelFile/";
         let response = await axios.post(url, formData)
         this.alertSuccess = true
       } catch (error) {
