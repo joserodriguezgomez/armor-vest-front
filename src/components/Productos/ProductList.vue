@@ -1,12 +1,11 @@
 <template>
-
   <v-container fluid class="mi-fondo-personalizado">
-  <v-alert
-    v-if="alertSuccess"
-    text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima, at placeat totam, magni doloremque veniam neque porro libero rerum unde voluptatem!"
-    title="Alert title"
-    type="success"
-  ></v-alert>
+    <v-alert
+      v-if="alertSuccess"
+      text="Los datos han sido cargados con éxito"
+      title="Alerta"
+      type="success"
+    ></v-alert>
 
     <v-row>
       <v-col cols="12" sm="3" v-for="(filter, index) in filters" :key="index">
@@ -21,7 +20,7 @@
     </v-row>
 
     <v-row>
-      <v-col cols="1" offset = "9">
+      <v-col cols="1" offset="9">
         <v-btn
           class="v-btn--floating"
           color="primary"
@@ -34,7 +33,6 @@
         </v-btn>
       </v-col>
 
-
       <v-col cols="1">
         <v-btn class="v-btn--floating" color="primary" dark fab @click="excelDownload()">
           <v-icon>mdi-download</v-icon>
@@ -42,21 +40,12 @@
         </v-btn>
       </v-col>
 
-
-
       <v-col cols="1">
-        <v-btn
-          class="v-btn--floating"
-          color="primary"
-          dark
-          fab
-          @click="openDialogFile()"
-        >
+        <v-btn class="v-btn--floating" color="primary" dark fab @click="openDialogFile()">
           <v-icon>mdi-file-excel</v-icon>
           <!-- Icono dentro del botón -->
         </v-btn>
       </v-col>
-
     </v-row>
 
     <v-row>
@@ -180,8 +169,9 @@
                   <v-select
                     v-if="selectedChaleco.status === 'vendido'"
                     v-model="selectedChaleco.cliente"
+                    :items="filters.find(filter => filter.key === 'cliente').items"
                     label="Cliente"
-                    :items="['A', 'B', 'C']"
+                    
                     :disabled="!isEditing"
                   ></v-select>
 
@@ -205,10 +195,7 @@
       </v-card>
     </v-dialog>
 
-
-
-
-   <v-dialog v-model="dialog2" max-width="600px">
+    <v-dialog v-model="dialog2" max-width="600px">
       <v-card>
         <v-card-title>
           <span class="headline">Subir Archivo Excel</span>
@@ -222,9 +209,9 @@
               clear-icon="mdi-file"
               prepend-icon="mdi-paperclip"
               accept=".xlsx"
-
             ></v-file-input>
           </v-form>
+          <v-progress-circular v-if="loading" indeterminate color="primary" class="my-4"></v-progress-circular>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -236,30 +223,17 @@
       </v-card>
     </v-dialog>
 
-
- <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">¿Esta seguro de eliminar este registro?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancelar</v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm()">Eliminar</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-  </v-dialog>
-
-
-
-
-
-
-
-
-
-
-
-
+    <v-dialog v-model="dialogDelete" max-width="500px">
+      <v-card>
+        <v-card-title class="text-h5">¿Esta seguro de eliminar este registro?</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancelar</v-btn>
+          <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm()">Eliminar</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -271,14 +245,15 @@ import axios from "axios";
 export default {
   data() {
     return {
-      dialogDelete:false,
-      alertSuccess:false,
+      dialogDelete: false,
+      alertSuccess: false,
       file: null,
       dialog: false,
       dialog2: false,
       selectedChaleco: null,
       isEditing: false,
       valid: false,
+      loading: false,
       filters: [
         { key: "talla", label: "Talla", value: "Todas", items: [] },
         { key: "cliente", label: "Cliente", value: "Todas", items: [] },
@@ -350,8 +325,8 @@ export default {
       this.filteredProductData;
     },
 
-    openDialogFile(){
-      this.dialog2 = true
+    openDialogFile() {
+      this.dialog2 = true;
     },
 
     openDialog(chaleco, edit = false, agregar = false) {
@@ -413,12 +388,12 @@ export default {
     },
 
     deleteChaleco(chaleco) {
-      this.deleteItem = chaleco
-      this.dialogDelete = true
+      this.deleteItem = chaleco;
+      this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      console.log("chaleco eliminado")
+      console.log("chaleco eliminado");
       this.deleteProduct(this.deleteItem);
       this.closeDelete();
     },
@@ -436,25 +411,25 @@ export default {
     },
     async submitFile() {
       if (!this.file) return;
+      this.loading = true; // Activar el indicador de carga
       let formData = new FormData();
-      formData.append('file', this.file);
+      formData.append("file", this.file);
 
       try {
-
-        console.log(formData)
-        const url = "https://armor-vest-backend-b3be97e8ab51.herokuapp.com/api/uploadExcelFile/";
-        let response = await axios.post(url, formData)
-        this.alertSuccess = true
+        console.log(formData);
+        const url =
+          "https://armor-vest-backend-b3be97e8ab51.herokuapp.com/api/uploadExcelFile/";
+        let response = await axios.post(url, formData);
+        this.alertSuccess = true;
       } catch (error) {
         console.error(error);
+      } finally {
+        this.loading = false; // Desactivar el indicador de carga
+        setTimeout(() => {
+          this.alertSuccess = false;
+        }, 3000); // Ajusta este valor según lo necesites
       }
-      finally {
-    // Ocultar la alerta después de 3 segundos, independientemente del resultado de la carga
-      setTimeout(() => {
-        this.alertSuccess = false
-    }, 3000); // Ajusta este valor según lo necesites
-  }
-  },
+    }
   }
 };
 </script>
