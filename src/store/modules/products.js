@@ -38,6 +38,9 @@ const actions = {
     commit("SET_PRODUCT_DATA", response.data);
   },
   async updateProduct({ dispatch, state }, payload) {
+    console.log(payload._id)
+    payload.updatedBy = "sin informacion"
+    console.log(payload)
     const url = state.urlMode + `products/${payload._id}`;
 
     // payload.item.vencimientoPoliza = convertirDDMMYYYYaISO(payload.item.vencimientoPoliza);
