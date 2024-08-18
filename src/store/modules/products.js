@@ -3,8 +3,8 @@ import moment from 'moment';
 
 
 const state = {
-  //urlMode: "https://armor-vest-backend-b3be97e8ab51.herokuapp.com/api/",
-  urlMode: "http://127.0.0.1:8000/api/",
+  urlMode: "https://armor-vest-backend-b3be97e8ab51.herokuapp.com/api/",
+  //urlMode: "http://127.0.0.1:8000/api/",
   productData: [
   ],
   chartData: {},
