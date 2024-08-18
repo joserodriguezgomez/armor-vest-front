@@ -20,11 +20,14 @@
       </v-col>
     </v-row>
 
-<v-row>
+    <v-row>
+    <v-col cols="12" md="12">
       <v-col cols="12" md="12">
-        <ControlStock />
+        <ControlStock v-if="Array.isArray(lote_data)" />
+        <ProductList v-else />
       </v-col>
-    </v-row>
+    </v-col>
+  </v-row>
 
 
   </v-container>
@@ -32,15 +35,45 @@
 
 
 
-<script setup>
+<script>
+
+ import { mapState, mapActions, mapMutations } from "vuex";
+
   import cargaMasiva from '@/components/Modulo-dashboard/LateralBar.vue';
   import BarChart from '@/components/Modulo-dashboard/Lineas.vue'; // Reemplaza con la ruta correcta
   import PieChart from '@/components/Modulo-dashboard/Circulo.vue'; // Reemplaza con la ruta correcta
   import LineChart from '@/components/Modulo-dashboard/Prueba.vue';
   import VencimientoPanel from '@/components/Modulo-dashboard/VencimientoPanel.vue'; // Reemplaza con la ruta correcta
   import VencimientoPoliza from '@/components/Modulo-dashboard/VencimientoPoliza.vue';
-  import ControlStock from '@/components/Productos/ProductList.vue';
+  import ControlStock from '@/components/prueba.vue';
+  import ProductList from '@/components/Productos/ProductList.vue';
   // import ControlStock from '@/components/Modulo-dashboard/ControlStock.vue';
+
+  export default {
+    components: {
+      cargaMasiva,
+      BarChart,
+      PieChart,
+      LineChart,
+      VencimientoPanel,
+      VencimientoPoliza,
+      ControlStock,
+      ProductList
+
+  },
+    data() {
+      return {
+        
+      }
+    },
+    computed: {
+      ...mapState('products', ['productData','lote_data']),
+    },
+    currentComponent() {
+      return this.lote_data !="all"? 'ControlStock' : 'ProductList';
+    }
+  }
+
 </script>
 
 <style scoped>

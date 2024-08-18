@@ -2,6 +2,14 @@
   <router-view />
 </template>
 
-<script setup>
-  //
+<script>
+import { mapActions } from 'vuex';
+
+export default {
+  created() {
+    if (this.$store.getters.isAuthenticated) {
+      this.$store.dispatch('getUser');
+    }
+  },
+};
 </script>

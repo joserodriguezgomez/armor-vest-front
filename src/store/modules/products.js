@@ -3,15 +3,26 @@ import moment from 'moment';
 
 
 const state = {
-  urlMode: "https://armor-vest-backend-b3be97e8ab51.herokuapp.com/api/",
-  // urlMode: "http://127.0.0.1:8000/api/",
+  //urlMode: "https://armor-vest-backend-b3be97e8ab51.herokuapp.com/api/",
+  urlMode: "http://127.0.0.1:8000/api/",
   productData: [
   ],
-  chartData: {}
+  chartData: {},
+  lote_data:[]
 };
 
 
 const mutations = {
+  SET_LOTE_DATA(state, { data, lote }) {
+    if (lote === false) {
+      console.log("se ejecuta el falso")
+      state.lote_data = data;
+    } else {
+      console.log("se ejecuta el verdadero")
+
+      state.lote_data = lote;
+    }
+  },
   SET_PRODUCT_DATA(state, data) {
     state.productData = data;
   },
@@ -30,12 +41,18 @@ const mutations = {
 };
 
 const actions = {
-  async fetchProductData({ commit }) {
-    const url = state.urlMode + "products";
+  async fetchProductData({ commit }, payload) {
+    const url = state.urlMode + `products/${payload}`;
     const response = await axios.get(url);
-    console.log(response)
     // Simulate fetching data from API
     commit("SET_PRODUCT_DATA", response.data);
+  },
+  async fetchLoteData({commit}, lote = false){
+    const url = state.urlMode + `lote_summary`;
+    
+    const response = await axios.get(url);
+    console.log("desde api:",lote)
+    commit("SET_LOTE_DATA", { data: response.data, lote: lote });
   },
   async updateProduct({ dispatch, state }, payload) {
     console.log(payload._id)
