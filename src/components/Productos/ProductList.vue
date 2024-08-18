@@ -8,6 +8,7 @@
     ></v-alert>
 
     <v-row>
+      
       <v-col cols="12" sm="3" v-for="(filter, index) in filters" :key="index">
         <v-select
           v-model="filter.value"
@@ -20,13 +21,36 @@
     </v-row>
 
     <v-row>
-      <v-col cols="1" offset="9">
+      <v-col cols="1">
+
+        <v-btn
+          class="v-btn--floating"
+          color="primary"
+          dark
+          fab
+          @click="goToDetails()"
+        >
+          <v-icon>mdi-arrow-left-bold</v-icon>
+          <!-- Icono dentro del botón -->
+        </v-btn>
+
+
+ 
+
+        
+
+
+      </v-col>
+
+
+      <v-col cols="1" offset="8">
         <v-btn
           class="v-btn--floating"
           color="primary"
           dark
           fab
           @click="openDialog(chaleco, true, true)"
+          v-if="allowedEdit.includes(user.role)"
         >
           <v-icon>mdi-plus</v-icon>
           <!-- Icono dentro del botón -->
@@ -103,8 +127,19 @@
           </v-card-text>
           <v-card-actions class="primary lighten-4">
             <v-spacer></v-spacer>
-            <v-icon small class="mr-2" @click="openDialog(chaleco, true)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteChaleco(chaleco)">mdi-delete</v-icon>
+            <v-icon 
+              small class="mr-2" 
+              @click="openDialog(chaleco, true)"
+              v-if="allowedEdit.includes(user.role)"
+              >
+              mdi-pencil
+            </v-icon>
+            <v-icon 
+            small 
+            @click="deleteChaleco(chaleco)"
+            v-if="allowedDelete.includes(user.role)"
+            >mdi-delete
+          </v-icon>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -245,6 +280,8 @@ import axios from "axios";
 export default {
   data() {
     return {
+      displayedChalecos: [],
+      itemsPerPage: 100,
       dialogDelete: false,
       alertSuccess: false,
       file: null,
@@ -263,7 +300,14 @@ export default {
     };
   },
   computed: {
-    ...mapState("products", ["productData"]),
+    ...mapState('auth', ['user']),
+    ...mapState('products', ['productData','lote_data']),
+    allowedEdit() {
+      return ['admin', 'editor'];
+    },
+    allowedDelete() {
+      return ['admin', 'editor'];
+    },
     tallaItems() {
       const tallas = this.productData.map(chaleco => chaleco.talla);
       // Obtener tallas únicas y agregar "Todas"
@@ -286,11 +330,11 @@ export default {
         }
       });
 
-      return filteredData;
+      return filteredData.slice(0, this.itemsPerPage);
     }
   },
   mounted() {
-    this.$store.dispatch("products/fetchProductData");
+    this.$store.dispatch("products/fetchProductData",this.lote_data);
   },
   watch: {
     productData: {
@@ -307,8 +351,12 @@ export default {
       "fetchProductData",
       "updateProduct",
       "addProduct",
-      "deleteProduct"
+      "deleteProduct",
+      "fetchLoteData"
     ]),
+    goToDetails() {
+        this.$store.dispatch("products/fetchLoteData");
+      },
     initializeFilters() {
       this.filters.forEach(filter => {
         const uniqueItems = [
@@ -441,6 +489,25 @@ export default {
   border-radius: 16px;
   box-shadow: 0 4px 8px silver(190, 16, 16, 0.833);
   padding: 16px;
+  cursor: pointer;
+  animation: fadeIn 0.5s ease-in-out;
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+.card-style:hover {
+    box-shadow: 0 10px 20px rgba(229, 221, 221, 0.2);
+    transform: translateY(-5px) scale(1.05);
 }
 
 .border-top-right {
@@ -468,5 +535,25 @@ export default {
 
 .mi-fondo-personalizado {
   background-color: white;
+}
+
+.modern-fab {
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(45deg, #00C6FF, #0072FF);
+  color: white;
+  border-radius: 50%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.modern-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 </style>

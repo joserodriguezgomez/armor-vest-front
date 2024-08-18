@@ -1,13 +1,14 @@
 <template>
   <v-data-table
-    :headers="polizaHeaders"
-    :items="polizas"
-    @click:row="handleRowClick"
+    :headers="headers"
+    :items="desserts"
+    :sort-by="[{ key: 'calories', order: 'asc' }]"
   >
     <template v-slot:top>
       <v-toolbar
         flat
       >
+        <v-toolbar-title>My CRUD</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -20,9 +21,9 @@
         >
           <template v-slot:activator="{ props }">
             <v-btn
+              class="mb-2"
               color="primary"
               dark
-              class="mb-2"
               v-bind="props"
             >
               New Item
@@ -38,25 +39,54 @@
                 <v-row>
                   <v-col
                     cols="12"
-                    sm="6"
                     md="4"
+                    sm="6"
                   >
                     <v-text-field
-                      v-model="editedItem.serie"
-                      label="serie"
+                      v-model="editedItem.name"
+                      label="Dessert name"
                     ></v-text-field>
                   </v-col>
                   <v-col
                     cols="12"
-                    sm="6"
                     md="4"
+                    sm="6"
                   >
                     <v-text-field
-                      v-model="editedItem.numeroPoliza"
-                      label="poliza"
+                      v-model="editedItem.calories"
+                      label="Calories"
                     ></v-text-field>
                   </v-col>
-                  
+                  <v-col
+                    cols="12"
+                    md="4"
+                    sm="6"
+                  >
+                    <v-text-field
+                      v-model="editedItem.fat"
+                      label="Fat (g)"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="4"
+                    sm="6"
+                  >
+                    <v-text-field
+                      v-model="editedItem.carbs"
+                      label="Carbs (g)"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="4"
+                    sm="6"
+                  >
+                    <v-text-field
+                      v-model="editedItem.protein"
+                      label="Protein (g)"
+                    ></v-text-field>
+                  </v-col>
                 </v-row>
               </v-container>
             </v-card-text>
@@ -95,17 +125,17 @@
     </template>
     <template v-slot:item.actions="{ item }">
       <v-icon
-        size="small"
         class="me-2"
+        size="small"
         @click="editItem(item)"
       >
-        $vuetify
+        mdi-pencil
       </v-icon>
       <v-icon
         size="small"
         @click="deleteItem(item)"
       >
-        mdi-upload
+        mdi-delete
       </v-icon>
     </template>
     <template v-slot:no-data>
@@ -119,32 +149,42 @@
   </v-data-table>
 </template>
 <script>
-
-import { mapGetters } from 'vuex'
-
-
   export default {
     data: () => ({
       dialog: false,
       dialogDelete: false,
-      polizaHeaders:[
-        { title: 'Poliza', key: 'numeroPoliza' },
-        { title: 'Serie', key: 'serie' },
+      headers: [
+        {
+          title: 'Dessert (100g serving)',
+          align: 'start',
+          sortable: false,
+          key: 'name',
+        },
+        { title: 'Calories', key: 'calories' },
+        { title: 'Fat (g)', key: 'fat' },
+        { title: 'Carbs (g)', key: 'carbs' },
+        { title: 'Protein (g)', key: 'protein' },
+        { title: 'Actions', key: 'actions', sortable: false },
       ],
-      polizas:[],
+      desserts: [],
       editedIndex: -1,
       editedItem: {
-        poliza: '',
-        serie: ''
+        name: '',
+        calories: 0,
+        fat: 0,
+        carbs: 0,
+        protein: 0,
       },
       defaultItem: {
-        poliza: '',
-        serie: ''
+        name: '',
+        calories: 0,
+        fat: 0,
+        carbs: 0,
+        protein: 0,
       },
     }),
 
     computed: {
-     ...mapGetters('polizas', ['getPolizas']),
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },
@@ -161,31 +201,98 @@ import { mapGetters } from 'vuex'
 
     created () {
       this.initialize()
-      this.polizas = this.getPolizas
-      console.log(this.getPolizas)
     },
 
     methods: {
-     handleRowClick(event, item) {
-      console.log(item.item); // Ahora debería mostrar el objeto del producto
-      this.$emit('select-poliza', item.item);
-    },
-      initialize () {},
+      initialize () {
+        this.desserts = [
+          {
+            name: 'Frozen Yogurt',
+            calories: 159,
+            fat: 6.0,
+            carbs: 24,
+            protein: 4.0,
+          },
+          {
+            name: 'Ice cream sandwich',
+            calories: 237,
+            fat: 9.0,
+            carbs: 37,
+            protein: 4.3,
+          },
+          {
+            name: 'Eclair',
+            calories: 262,
+            fat: 16.0,
+            carbs: 23,
+            protein: 6.0,
+          },
+          {
+            name: 'Cupcake',
+            calories: 305,
+            fat: 3.7,
+            carbs: 67,
+            protein: 4.3,
+          },
+          {
+            name: 'Gingerbread',
+            calories: 356,
+            fat: 16.0,
+            carbs: 49,
+            protein: 3.9,
+          },
+          {
+            name: 'Jelly bean',
+            calories: 375,
+            fat: 0.0,
+            carbs: 94,
+            protein: 0.0,
+          },
+          {
+            name: 'Lollipop',
+            calories: 392,
+            fat: 0.2,
+            carbs: 98,
+            protein: 0,
+          },
+          {
+            name: 'Honeycomb',
+            calories: 408,
+            fat: 3.2,
+            carbs: 87,
+            protein: 6.5,
+          },
+          {
+            name: 'Donut',
+            calories: 452,
+            fat: 25.0,
+            carbs: 51,
+            protein: 4.9,
+          },
+          {
+            name: 'KitKat',
+            calories: 518,
+            fat: 26.0,
+            carbs: 65,
+            protein: 7,
+          },
+        ]
+      },
 
       editItem (item) {
-        this.editedIndex = this.polizas.indexOf(item)
+        this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
-        this.editedIndex = this.polizas.indexOf(item)
+        this.editedIndex = this.desserts.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
 
       deleteItemConfirm () {
-        this.polizas.splice(this.editedIndex, 1)
+        this.desserts.splice(this.editedIndex, 1)
         this.closeDelete()
       },
 
@@ -207,9 +314,9 @@ import { mapGetters } from 'vuex'
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.polizas[this.editedIndex], this.editedItem)
+          Object.assign(this.desserts[this.editedIndex], this.editedItem)
         } else {
-          this.polizas.push(this.editedItem)
+          this.desserts.push(this.editedItem)
         }
         this.close()
       },

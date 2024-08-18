@@ -1,7 +1,18 @@
-import { createRouter, createWebHistory } from 'vue-router' 
-
+import { createRouter, createWebHistory } from 'vue-router';
+import store from '../store'; // Importa tu store de Vuex
 
 const routes = [
+  {
+    path: '/Login',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Login',
+        component: () => import('@/views/LoginPage.vue'),
+      },
+    ],
+  },
   {
     path: '/Dashboard',
     component: () => import('@/layouts/default/Default.vue'),
@@ -9,171 +20,48 @@ const routes = [
       {
         path: '',
         name: 'Dashboard',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/Dashboard.vue'),
+        component: () => import('@/views/Dashboard.vue'),
       },
-      
     ],
+    meta: { requiresAuth: true }, // Añade meta propiedad para rutas que requieren autenticación
   },
   {
-    path: '/ventas',
+    path: '/usuarios',
     component: () => import('@/layouts/default/Default.vue'),
     children: [
       {
         path: '',
-        name: 'Ventas',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/Ventas.vue'),
-        
+        name: 'Usuarios',
+        component: () => import('@/views/Users.vue'),
       },
     ],
+    meta: { requiresAuth: true }, // Añade meta propiedad para rutas que requieren autenticación
   },
-  {
-    path: '/clientes',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'clientes',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/Clientes.vue'),
-      },
-      
-    ],
-  },
-  {
-    path: '/polizas',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'polizas',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/PolizaView.vue'),
-      },
-      
-    ],
-  },
-  {
-    path: '/chalecos',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'chalecos',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/ChalecoView.vue'),
-      },
-      
-    ],
-  },
-  {
-    path: '/formulario',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'formulario',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/components/Modulo-ventas/Formulario'),
-      },
-      
-    ],
-  },
-  {
-    path: '/ingresos',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'ingresos',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/ingreso.vue'),
-      },
-      
-    ],
-  },
-  {
-    path: '/actualizacion',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'actualizacion',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/actualizacion.vue'),
-      },
-      
-    ],
-  },
-  {
-    path: '/muestras',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'muestras',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/muestras.vue'),
-      },
-      
-    ],
-  },
-  {
-    path: '/devoluciones',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'devoluciones',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/devoluciones.vue'),
-      },
-      
-    ],
-  },
-  {
-    path: '/noidic',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'noidic',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/noidic.vue'),
-      },
-      
-    ],
-  },
-]
+  // Añade aquí otras rutas que necesiten autenticación
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-})
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // Esta ruta requiere autenticación, verifica si el usuario está autenticado
+    if (!store.getters['auth/isAuthenticated']) {
+      // Si no está autenticado, redirige a la página de login
+      next({
+        path: '/Login',
+        query: { redirect: to.fullPath }
+      });
+    } else {
+      next(); // Asegúrate de llamar a next()
+    }
+  } else {
+    next(); // Asegúrate de llamar a next()
+  }
+});
+
+export default router;
 
 

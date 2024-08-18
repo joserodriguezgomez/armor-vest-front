@@ -12,20 +12,23 @@
 
         <v-spacer></v-spacer>
 
-        <!-- Botón notificaciones -->
-        <v-btn class="text-none" stacked>
-          <v-badge content="1" color="error">
-            <v-icon>mdi-bell-outline</v-icon>
-          </v-badge>
-        </v-btn>
-
-        <v-btn icon>
-          <v-icon icon="mdi-account-circle"></v-icon>
-        </v-btn>
-
-        <v-btn icon>
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
+        <v-menu
+          offset-y
+          :close-on-content-click="false"
+          v-slot:activator="{ on, attrs }"
+          class="logout-style"
+          v-if="isAuthenticated"
+        >
+          <v-list>
+            <!-- Opción de cerrar sesión estilizada -->
+            <v-list-item @click="handleLogout" class="logout-style">
+              <v-list-item-icon>
+                <v-icon color="white">mdi-logout</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title class="logout-style">Cerrar sesión</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-toolbar>
     </div>
     <v-layout align-center justify-space-around wrap>
@@ -41,25 +44,11 @@
           <v-list-item-avatar>
             <v-icon color="hielo" size="28">mdi-account-circle</v-icon>
           </v-list-item-avatar>
-          <template v-slot:append>
-            <!-- <v-btn
-              variant="text"
-              icon="mdi-chevron-left"
-              @click.stop="rail = !rail"
-            ></v-btn> -->
-          </template>
         </v-list-item>
 
         <v-divider value="Users"></v-divider>
 
         <v-list dense nav>
-          <!-- <v-list-item
-            prepend-icon="mdi-chart-bar"
-            title="autenticacion"
-            value="Home"
-            to="/"
-          ></v-list-item> -->
-
           <v-list-item
             prepend-icon="mdi-chart-bar"
             title="Dashboard"
@@ -67,46 +56,24 @@
             to="/Dashboard"
           ></v-list-item>
 
-          <v-list-group value="Stock">
-            <template v-slot:activator="{ props }">
-              <v-list-item
-                v-bind="props"
-                prepend-icon="mdi-package-variant-closed"
-                title="Chalecos"
-              ></v-list-item>
-            </template>
-
-            <v-list-item
-              prepend-icon="mdi-form-select"
-              title="Ingreso DATA"
-              value="ingresos"
-              to="/ingresos"
-            ></v-list-item>
-            <v-list-item
-              prepend-icon="mdi-database-plus"
-              title="Salida DATA"
-              value="actualizacion"
-              to="/actualizacion"
-            ></v-list-item>
-          </v-list-group>
-          <v-list-item
+         <v-list-item
             prepend-icon="mdi-handshake"
             title="Clientes"
             value="clientes"
             to="/clientes"
           ></v-list-item>
-          <!-- <v-list-item
-            prepend-icon="mdi-account-group"
+
+          <v-list-item
+            prepend-icon="mdi-handshake"
             title="Usuarios"
             value="usuarios"
             to="/usuarios"
-          ></v-list-item> -->
+          ></v-list-item>
         </v-list>
       </v-navigation-drawer>
 
       <my-toolbar :drawer="drawer"></my-toolbar>
       <v-main class="custom-main">
-        <!-- <div class="main-header">{{ this.main_title }}</div> -->
         <router-view></router-view>
       </v-main>
     </v-layout>
@@ -114,7 +81,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   data() {
@@ -124,11 +91,21 @@ export default {
     };
   },
   computed: {
-    ...mapState("menu", ["main_title"]),
+    ...mapGetters("auth", ["isAuthenticated"]),
+  },
+  methods: {
+    ...mapActions('auth', ['logout']),
+    async handleLogout() {
+      try {
+        await this.logout(); // Ejecuta la acción de logout
+        this.$router.push({ name: 'Login' }); // Redirige a la página de login
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    },
   },
 };
 </script>
-
 
 <style scoped>
 /* Colores */
@@ -214,7 +191,12 @@ export default {
   width: 100px;
   height: 40px;
 }
+
+.logout-style{
+  background-color: black;
+  color:white
+
+}
+
+
 </style>
-
-
-
