@@ -56,12 +56,12 @@
             to="/Dashboard"
           ></v-list-item>
 
-         <v-list-item
+         <!-- <v-list-item
             prepend-icon="mdi-handshake"
             title="Clientes"
             value="clientes"
             to="/clientes"
-          ></v-list-item>
+          ></v-list-item> -->
 
           <v-list-item
             prepend-icon="mdi-handshake"
