@@ -1,14 +1,15 @@
 <template>
+<v-container fluid class="min-height">
   <v-data-table
     :headers="headers"
-    :items="desserts"
+    :items="userData"
     :sort-by="[{ key: 'calories', order: 'asc' }]"
   >
     <template v-slot:top>
       <v-toolbar
         flat
       >
-        <v-toolbar-title>My CRUD</v-toolbar-title>
+        <v-toolbar-title></v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -26,7 +27,7 @@
               dark
               v-bind="props"
             >
-              New Item
+              Nuevo usuario
             </v-btn>
           </template>
           <v-card>
@@ -39,53 +40,59 @@
                 <v-row>
                   <v-col
                     cols="12"
-                    md="4"
+                    md="12"
                     sm="6"
                   >
                     <v-text-field
-                      v-model="editedItem.name"
-                      label="Dessert name"
+                      v-model="editedItem.username"
+                      label="Usuario"
                     ></v-text-field>
                   </v-col>
                   <v-col
                     cols="12"
-                    md="4"
+                    md="12"
                     sm="6"
                   >
                     <v-text-field
-                      v-model="editedItem.calories"
-                      label="Calories"
+                      v-model="editedItem.email"
+                      label="Email"
                     ></v-text-field>
                   </v-col>
                   <v-col
                     cols="12"
-                    md="4"
+                    md="12"
                     sm="6"
                   >
                     <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
+                      v-model="editedItem.full_name"
+                      label="nombre"
                     ></v-text-field>
                   </v-col>
                   <v-col
                     cols="12"
-                    md="4"
+                    md="12"
                     sm="6"
                   >
-                    <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
-                    ></v-text-field>
+                    <!-- <v-select
+                      v-model="editedItem.disabled"
+                      :items="status_usuarios"
+                      label="status"
+                    ></v-select> -->
                   </v-col>
                   <v-col
                     cols="12"
-                    md="4"
+                    md="12"
                     sm="6"
                   >
-                    <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
-                    ></v-text-field>
+                    <!-- <v-text-field
+                      v-model="editedItem.alias"
+                      label="Alias"
+                    ></v-text-field> -->
+                    <v-select
+                      v-model="editedItem.role"
+                      :items="roles"
+                      label="role"
+                    ></v-select>
                   </v-col>
                 </v-row>
               </v-container>
@@ -98,24 +105,24 @@
                 variant="text"
                 @click="close"
               >
-                Cancel
+                Cancelar
               </v-btn>
               <v-btn
                 color="blue-darken-1"
                 variant="text"
                 @click="save"
               >
-                Save
+                Guardar
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+            <v-card-title class="text-h5">Estás seguro de eliminar este usuario?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancelar</v-btn>
               <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -147,46 +154,51 @@
       </v-btn>
     </template>
   </v-data-table>
+</v-container>
 </template>
 <script>
+
+import { mapState, mapActions, mapMutations } from "vuex";
+
   export default {
     data: () => ({
+      roles: ["admin","visualizador"],
+      status_usuarios: ["true", "false"],
       dialog: false,
       dialogDelete: false,
       headers: [
-        {
-          title: 'Dessert (100g serving)',
-          align: 'start',
-          sortable: false,
-          key: 'name',
-        },
-        { title: 'Calories', key: 'calories' },
-        { title: 'Fat (g)', key: 'fat' },
-        { title: 'Carbs (g)', key: 'carbs' },
-        { title: 'Protein (g)', key: 'protein' },
+        { title: 'usuario', key: 'username' },
+        { title: 'email', key: 'email' },
+        { title: 'nombre', key: 'full_name' },
+        { title: 'rol', key: 'role' },
         { title: 'Actions', key: 'actions', sortable: false },
       ],
       desserts: [],
       editedIndex: -1,
       editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
+        username: '',
+        email: '',
+        full_name: '',
+        hashed_password: "1234",
+        disabled: "false",
+        alias: '',
+        role: '',
       },
       defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
+        username: '',
+        email: '',
+        full_name: '',
+        hashed_password: '1234',
+        disabled: "false",
+        alias: '',
+        role: 'visualizador',
       },
     }),
 
     computed: {
+      ...mapState('usuarios', ['userData']),
       formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+        return this.editedIndex === -1 ? 'Nuevo usuario' : 'Editar usuario'
       },
     },
 
@@ -200,87 +212,24 @@
     },
 
     created () {
+      this.$store.dispatch("usuarios/fetchUserData");
+      console.log("data usuario: ",this.userData)
       this.initialize()
     },
 
     methods: {
+      ...mapActions("usuarios", [
+        "fetchUserData",
+        "updateUser",
+        "deleteUser",
+        "addUser"
+      ]),
       initialize () {
-        this.desserts = [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-          },
-        ]
+
       },
 
       editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
+        this.editedIndex = this.userData.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
@@ -292,7 +241,8 @@
       },
 
       deleteItemConfirm () {
-        this.desserts.splice(this.editedIndex, 1)
+        this.$store.dispatch("usuarios/deleteUser",this.editedItem);
+        // this.desserts.splice(this.editedIndex, 1)
         this.closeDelete()
       },
 
@@ -314,12 +264,20 @@
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+          this.$store.dispatch("usuarios/updateUser",this.editedItem);
         } else {
-          this.desserts.push(this.editedItem)
+          this.$store.dispatch("usuarios/addUser",this.editedItem);
         }
         this.close()
       },
     },
   }
 </script>
+
+
+
+<style>
+.min-height {
+  min-height: 100vh; /* 80% del viewport height */
+}
+</style>
