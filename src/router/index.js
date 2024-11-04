@@ -37,6 +37,18 @@ const routes = [
     ],
     meta: { requiresAuth: true }, // Añade meta propiedad para rutas que requieren autenticación
   },
+  {
+    path: '/reporte',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'reporte',
+        component: () => import('@/views/Report.vue'),
+      },
+    ],
+    meta: { requiresAuth: true }, // Añade meta propiedad para rutas que requieren autenticación
+  },
   // Añade aquí otras rutas que necesiten autenticación
 ];
 

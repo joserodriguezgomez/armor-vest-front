@@ -23,8 +23,8 @@
     <v-row>
     <v-col cols="12" md="12">
       <v-col cols="12" md="12">
-        <ControlStock v-if="Array.isArray(lote_data)" />
-        <ProductList v-else />
+          <ControlStock v-if="Array.isArray(lote_data)" />
+          <ProductList v-else />
       </v-col>
     </v-col>
   </v-row>
@@ -47,6 +47,7 @@
   import VencimientoPoliza from '@/components/Modulo-dashboard/VencimientoPoliza.vue';
   import ControlStock from '@/components/prueba.vue';
   import ProductList from '@/components/Productos/ProductList.vue';
+  import reporte from '@/components/Productos/reporte.vue';
   // import ControlStock from '@/components/Modulo-dashboard/ControlStock.vue';
 
   export default {
@@ -58,7 +59,8 @@
       VencimientoPanel,
       VencimientoPoliza,
       ControlStock,
-      ProductList
+      ProductList,
+      reporte
 
   },
     data() {

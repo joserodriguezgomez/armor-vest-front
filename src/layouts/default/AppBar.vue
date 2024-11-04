@@ -64,11 +64,19 @@
           ></v-list-item> -->
 
           <v-list-item
-            prepend-icon="mdi-handshake"
+            prepend-icon="mdi-account-multiple"
             title="Usuarios"
             value="usuarios"
             to="/usuarios"
           ></v-list-item>
+
+          <v-list-item
+            prepend-icon="mdi-file-document"
+            title="Reporte"
+            value="reporte"
+            to="/reporte"
+          ></v-list-item>
+
         </v-list>
       </v-navigation-drawer>
 
